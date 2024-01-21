@@ -5,18 +5,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RoguelikeBase.Constants;
+using RoguelikeBase.Scenes;
 
 namespace RoguelikeBase.UI
 {
     internal class MainMenuScreen : ScreenObject
     {
+        RootScreen RootScreen;
+
         ScreenSurface screen;
         bool dirty = true;
 
         int selectedButtonIndex = 0;
 
-        public MainMenuScreen() 
+        public MainMenuScreen(RootScreen rootScreen) 
         {
+            RootScreen = rootScreen;
             screen = new ScreenSurface(GameSettings.GAME_WIDTH, GameSettings.GAME_HEIGHT);
         }
 
@@ -60,7 +65,7 @@ namespace RoguelikeBase.UI
                 switch(selectedButtonIndex)
                 {
                     case 0:
-                        // New Game
+                        RootScreen.AddScreen(Screens.Game, new GameScreen(RootScreen));
                         break;
                     case 1:
                         // Continue Game
@@ -108,7 +113,7 @@ namespace RoguelikeBase.UI
 
         private bool showContinue()
         {
-            return File.Exists("savegame.txt");
+            return RootScreen.HasScreen(Screens.Game) || File.Exists("savegame.txt");
         }
 
         public override void Render(TimeSpan delta) 
