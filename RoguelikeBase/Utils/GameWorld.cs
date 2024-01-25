@@ -1,5 +1,6 @@
 ﻿using Arch.Core;
 using RoguelikeBase.Constants;
+using RoguelikeBase.Map;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,12 +14,15 @@ namespace RoguelikeBase.Utils
         public World World { get; set; }
         public GameState CurrentState { get; set; }
         public List<string> GameLog { get; set; }
-
+        public Dictionary<string, Map.Map> Maps { get; set; }
+        public string CurrentMap { get; set; }
         public GameWorld() 
         {
             World = World.Create();
             CurrentState = GameState.Loading;
             GameLog = new List<string>();
+            Maps = new Dictionary<string, Map.Map>();
+            CurrentMap = string.Empty;
         }
     }
 }

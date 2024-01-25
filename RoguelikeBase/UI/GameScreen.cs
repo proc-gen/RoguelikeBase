@@ -1,5 +1,6 @@
 ﻿using Arch.Core;
 using RoguelikeBase.Constants;
+using RoguelikeBase.Map.Generators;
 using RoguelikeBase.Scenes;
 using RoguelikeBase.UI.Extensions;
 using RoguelikeBase.Utils;
@@ -19,19 +20,23 @@ namespace RoguelikeBase.UI
         bool dirty = true;
 
         GameWorld world;
+        Generator generator;
 
         public GameScreen(RootScreen rootScreen)
         {
             RootScreen = rootScreen;
             screen = new ScreenSurface(GameSettings.GAME_WIDTH, GameSettings.GAME_HEIGHT);
             world = new GameWorld();
-
+            generator = new RoomsAndCorridorsGenerator(GameSettings.GAME_WIDTH, GameSettings.GAME_HEIGHT - 11);
             StartNewGame();
         }
 
         private void StartNewGame()
         {
+            generator.Generate();
             world.GameLog.Add("Welcome traveler");
+            world.Maps.Add("map", generator.Map);
+            world.CurrentMap = "map";
             world.CurrentState = GameState.PlayerTurn;
         }
 
@@ -62,6 +67,7 @@ namespace RoguelikeBase.UI
             if(dirty)
             {
                 DrawGameLog();
+                DrawMap();
 
                 dirty = false;
             }
@@ -76,6 +82,19 @@ namespace RoguelikeBase.UI
             {
                 screen.Print(2, y, world.GameLog[world.GameLog.Count - i]);
                 y++;
+            }
+        }
+
+        private void DrawMap()
+        {
+            var map = world.Maps[world.CurrentMap];
+            for(int i = 0; i < map.Width; i++)
+            {
+                for (int j = 0; j < map.Height; j++)
+                {
+                    var tile = map.GetMapTile(i, j);
+                    screen.Surface[i, j].Background = tile.BackgroundColor;
+                }
             }
         }
 
