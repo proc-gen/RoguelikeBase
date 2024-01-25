@@ -1,5 +1,7 @@
 ﻿using Arch.Core;
 using RoguelikeBase.Constants;
+using RoguelikeBase.ECS.Components;
+using RoguelikeBase.ECS.Systems.RenderSystems;
 using RoguelikeBase.Map.Generators;
 using RoguelikeBase.Scenes;
 using RoguelikeBase.UI.Extensions;
@@ -22,18 +24,30 @@ namespace RoguelikeBase.UI
         GameWorld world;
         Generator generator;
 
+        List<IRenderSystem> renderSystems = new List<IRenderSystem>();
+
         public GameScreen(RootScreen rootScreen)
         {
             RootScreen = rootScreen;
             screen = new ScreenSurface(GameSettings.GAME_WIDTH, GameSettings.GAME_HEIGHT);
             world = new GameWorld();
             generator = new RoomsAndCorridorsGenerator(GameSettings.GAME_WIDTH, GameSettings.GAME_HEIGHT - 11);
+            
+            InitializeECS();
             StartNewGame();
+        }
+
+        private void InitializeECS()
+        {
+            renderSystems.Add(new RenderHudSystem(world));
+            renderSystems.Add(new RenderMapSystem(world));
         }
 
         private void StartNewGame()
         {
             generator.Generate();
+            world.World.Create(new Player(), new Position() { Point = generator.GetPlayerStartingPosition() });
+
             world.GameLog.Add("Welcome traveler");
             world.Maps.Add("map", generator.Map);
             world.CurrentMap = "map";
@@ -66,35 +80,11 @@ namespace RoguelikeBase.UI
         {
             if(dirty)
             {
-                DrawGameLog();
-                DrawMap();
-
-                dirty = false;
-            }
-        }
-
-        private void DrawGameLog()
-        {
-            screen.DrawRLTKStyleBox(0, 39, 79, 10, Color.White, Color.Black);
-
-            int y = 40;
-            for (int i = 1; i <= Math.Min(9, world.GameLog.Count); i++)
-            {
-                screen.Print(2, y, world.GameLog[world.GameLog.Count - i]);
-                y++;
-            }
-        }
-
-        private void DrawMap()
-        {
-            var map = world.Maps[world.CurrentMap];
-            for(int i = 0; i < map.Width; i++)
-            {
-                for (int j = 0; j < map.Height; j++)
+                foreach(var renderSystem in renderSystems)
                 {
-                    var tile = map.GetMapTile(i, j);
-                    screen.Surface[i, j].Background = tile.BackgroundColor;
+                    renderSystem.Render(screen);
                 }
+                dirty = false;
             }
         }
 

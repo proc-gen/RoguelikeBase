@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace RoguelikeBase.Utils
 {
-    internal class GameWorld
+    public class GameWorld
     {
         public World World { get; set; }
         public GameState CurrentState { get; set; }
