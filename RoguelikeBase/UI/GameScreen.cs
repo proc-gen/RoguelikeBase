@@ -1,7 +1,9 @@
 ﻿using Arch.Core;
+using Arch.Core.Extensions;
 using RoguelikeBase.Constants;
 using RoguelikeBase.ECS.Components;
 using RoguelikeBase.ECS.Systems.RenderSystems;
+using RoguelikeBase.ECS.Systems.UpdateSystems;
 using RoguelikeBase.Map.Generators;
 using RoguelikeBase.Scenes;
 using RoguelikeBase.UI.Extensions;
@@ -19,12 +21,12 @@ namespace RoguelikeBase.UI
         RootScreen RootScreen;
 
         ScreenSurface screen;
-        bool dirty = true;
 
         GameWorld world;
         Generator generator;
 
         List<IRenderSystem> renderSystems = new List<IRenderSystem>();
+        List<IUpdateSystem> updateSystems = new List<IUpdateSystem>();
 
         public GameScreen(RootScreen rootScreen)
         {
@@ -41,28 +43,44 @@ namespace RoguelikeBase.UI
         {
             renderSystems.Add(new RenderHudSystem(world));
             renderSystems.Add(new RenderMapSystem(world));
+            renderSystems.Add(new RenderRenderablesSystem(world));
+
+
+            updateSystems.Add(new UpdatePlayerInputSystem(world));
         }
 
         private void StartNewGame()
         {
             generator.Generate();
-            world.World.Create(new Player(), new Position() { Point = generator.GetPlayerStartingPosition() });
+            world.PlayerRef =  world.World.Create(
+                new Player(), 
+                new Position() { Point = generator.GetPlayerStartingPosition() },
+                new PlayerInput(),
+                new Renderable() { Color = Color.DarkGreen, Glyph = '@' }
+            ).Reference();
 
             world.GameLog.Add("Welcome traveler");
             world.Maps.Add("map", generator.Map);
             world.CurrentMap = "map";
-            world.CurrentState = GameState.PlayerTurn;
+            world.CurrentState = GameState.AwaitingPlayerInput;
         }
-
 
         public override void Update(TimeSpan delta)
         {
-            if (world.CurrentState == GameState.PlayerTurn)
+            if (world.CurrentState == GameState.AwaitingPlayerInput)
             {
                 HandleKeyboard();
             }
+            else if(world.CurrentState == GameState.PlayerTurn) 
+            {
+                foreach(var system in updateSystems)
+                {
+                    system.Update(delta);
+                }
 
-            RefreshScreen();
+                world.CurrentState = GameState.AwaitingPlayerInput;
+            }
+
             base.Update(delta);
         }
 
@@ -74,22 +92,55 @@ namespace RoguelikeBase.UI
             {
                 RootScreen.SwitchScreen(Screens.MainMenu, true);
             }
+
+            if(keyboard.IsKeyPressed(SadConsole.Input.Keys.Up))
+            {
+                RequestMoveDirection(Direction.Up);                
+            }
+            else if (keyboard.IsKeyPressed(SadConsole.Input.Keys.Down))
+            {
+                RequestMoveDirection(Direction.Down);
+            }
+            else if (keyboard.IsKeyPressed(SadConsole.Input.Keys.Left))
+            {
+                RequestMoveDirection(Direction.Left);
+            }
+            else if (keyboard.IsKeyPressed(SadConsole.Input.Keys.Right))
+            {
+                RequestMoveDirection(Direction.Right);
+            }
+            else if(keyboard.IsKeyPressed(SadConsole.Input.Keys.Space))
+            {
+                RequestMoveDirection(Direction.None);
+            }
         }
 
-        private void RefreshScreen()
+        private void RequestMoveDirection(Direction direction)
         {
-            if(dirty)
+            var input = world.PlayerRef.Entity.Get<PlayerInput>();
+            if (direction != Direction.None)
             {
-                foreach(var renderSystem in renderSystems)
-                {
-                    renderSystem.Render(screen);
-                }
-                dirty = false;
+                input.Direction = new Point(direction.DeltaX, direction.DeltaY);
+                input.SkipTurn = false;
             }
+            else
+            {
+                input.Direction = Point.None; 
+                input.SkipTurn = true;
+            }
+
+            input.Processed = false;
+            world.PlayerRef.Entity.Set(input);
+            world.CurrentState = GameState.PlayerTurn;
         }
 
         public override void Render(TimeSpan delta)
         {
+            screen.Clear();
+            foreach (var renderSystem in renderSystems)
+            {
+                renderSystem.Render(screen);
+            }
             screen.Render(delta);
         }
     }

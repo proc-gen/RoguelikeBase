@@ -24,6 +24,11 @@ namespace RoguelikeBase.Map
             return MapGrid[y * Width + x];
         }
 
+        public Tile GetMapTile(Point point)
+        {
+            return GetMapTile(point.X, point.Y);
+        }
+
         public void SetMapTile(int x, int y, Tile tile)
         {
             MapGrid[y * Width + x] = tile;

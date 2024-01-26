@@ -9,6 +9,7 @@ namespace RoguelikeBase.Constants
     public enum GameState
     {
         Loading,
+        AwaitingPlayerInput,
         PlayerTurn,
         MonsterTurn,
         ShowInventory,

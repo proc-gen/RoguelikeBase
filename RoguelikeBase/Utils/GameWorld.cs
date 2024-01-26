@@ -12,6 +12,7 @@ namespace RoguelikeBase.Utils
     public class GameWorld
     {
         public World World { get; set; }
+        public EntityReference PlayerRef { get; set; }
         public GameState CurrentState { get; set; }
         public List<string> GameLog { get; set; }
         public Dictionary<string, Map.Map> Maps { get; set; }
