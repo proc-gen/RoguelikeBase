@@ -56,7 +56,8 @@ namespace RoguelikeBase.UI
                 new Player(), 
                 new Position() { Point = generator.GetPlayerStartingPosition() },
                 new PlayerInput(),
-                new Renderable() { Color = Color.DarkGreen, Glyph = '@' }
+                new Renderable() { Color = Color.DarkGreen, Glyph = '@' },
+                new ViewDistance() { Distance = 7 }
             ).Reference();
 
             world.GameLog.Add("Welcome traveler");

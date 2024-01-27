@@ -14,12 +14,14 @@ namespace RoguelikeBase.Map
     {
         public static List<Point> CalculateFOV(GameWorld World, EntityReference entity)
         {
-            HashSet<Point> fov = new HashSet<Point>(192);
-
             var entityPosition = entity.Entity.Get<Position>();
+            var entityViewDistance = entity.Entity.Get<ViewDistance>();
+
+            HashSet<Point> fov = new HashSet<Point>(entityViewDistance.Distance * entityViewDistance.Distance * 4);
+
             var map = World.Maps[World.CurrentMap];
 
-            List<Point> borderPoints = GetBorderPointsInSquare(map, entityPosition.Point, 7);            
+            List<Point> borderPoints = GetBorderPointsInSquare(map, entityPosition.Point, entityViewDistance.Distance);            
 
             foreach ( var borderPoint in borderPoints )
             {
@@ -27,7 +29,7 @@ namespace RoguelikeBase.Map
 
                 foreach(var point in pointsToBorder)
                 {
-                    if(Point.EuclideanDistanceMagnitude(entityPosition.Point, point) > 49)
+                    if(Point.EuclideanDistanceMagnitude(entityPosition.Point, point) > entityViewDistance.Distance * entityViewDistance.Distance)
                     {
                         break;
                     }
