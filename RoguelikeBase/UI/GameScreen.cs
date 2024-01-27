@@ -4,6 +4,7 @@ using RoguelikeBase.Constants;
 using RoguelikeBase.ECS.Components;
 using RoguelikeBase.ECS.Systems.RenderSystems;
 using RoguelikeBase.ECS.Systems.UpdateSystems;
+using RoguelikeBase.Map;
 using RoguelikeBase.Map.Generators;
 using RoguelikeBase.Scenes;
 using RoguelikeBase.UI.Extensions;
@@ -64,6 +65,7 @@ namespace RoguelikeBase.UI
             world.Maps.Add("map", generator.Map);
             world.CurrentMap = "map";
             world.CurrentState = GameState.AwaitingPlayerInput;
+            FieldOfView.CalculatePlayerFOV(world);
         }
 
         public override void Update(TimeSpan delta)

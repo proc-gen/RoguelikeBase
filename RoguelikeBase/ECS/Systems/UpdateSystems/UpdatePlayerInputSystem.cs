@@ -1,5 +1,7 @@
-﻿using Arch.Core.Extensions;
+﻿using Arch.Core;
+using Arch.Core.Extensions;
 using RoguelikeBase.ECS.Components;
+using RoguelikeBase.Map;
 using RoguelikeBase.Utils;
 using System;
 using System.Collections.Generic;
@@ -35,6 +37,7 @@ namespace RoguelikeBase.ECS.Systems.UpdateSystems
 
                 playerInput.Processed = true;
                 World.PlayerRef.Entity.Set(playerPosition, playerInput);
+                FieldOfView.CalculatePlayerFOV(World);
             }
         }
     }

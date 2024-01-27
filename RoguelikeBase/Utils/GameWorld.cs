@@ -17,6 +17,7 @@ namespace RoguelikeBase.Utils
         public List<string> GameLog { get; set; }
         public Dictionary<string, Map.Map> Maps { get; set; }
         public string CurrentMap { get; set; }
+        public HashSet<Point> PlayerFov { get; set; }
         public GameWorld() 
         {
             World = World.Create();
@@ -24,6 +25,7 @@ namespace RoguelikeBase.Utils
             GameLog = new List<string>();
             Maps = new Dictionary<string, Map.Map>();
             CurrentMap = string.Empty;
+            PlayerFov = new HashSet<Point>();
         }
     }
 }

@@ -33,5 +33,10 @@ namespace RoguelikeBase.Map
         {
             MapGrid[y * Width + x] = tile;
         }
+
+        public void SetMapTile(Point point, Tile tile)
+        {
+            SetMapTile(point.X, point.Y, tile);
+        }
     }
 }
