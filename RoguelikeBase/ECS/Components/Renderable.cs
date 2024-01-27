@@ -10,5 +10,6 @@ namespace RoguelikeBase.ECS.Components
     {
         public int Glyph { get; set; }
         public Color Color { get; set; }
+        public bool ShowOutsidePlayerFov { get; set; }
     }
 }

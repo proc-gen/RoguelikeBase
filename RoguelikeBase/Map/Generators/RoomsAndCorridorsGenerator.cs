@@ -11,7 +11,7 @@ namespace RoguelikeBase.Map.Generators
         static Tile Wall = new Tile()
         {
             BaseTileType = Constants.BaseTileTypes.Wall,
-            BackgroundColor = new Color(.3f, .3f, .3f)
+            BackgroundColor = new Color(0f, 0f, .5f)
         };
         static Tile Floor = new Tile()
         {
@@ -33,7 +33,7 @@ namespace RoguelikeBase.Map.Generators
             {
                 for (int j = 0; j < Map.Height; j++)
                 {
-                    Map.SetMapTile(i, j, Wall);
+                    Map.SetTile(i, j, Wall);
                 }
             }
 
@@ -88,7 +88,7 @@ namespace RoguelikeBase.Map.Generators
             {
                 for (int j = room.Y + 1; j <= room.MaxExtentY; j++)
                 {
-                    Map.SetMapTile(i, j, Floor);
+                    Map.SetTile(i, j, Floor);
                 }
             }
         }
@@ -97,7 +97,7 @@ namespace RoguelikeBase.Map.Generators
         {
             for (int i = Math.Min(x1, x2); i <= Math.Max(x1, x2); i++)
             {
-                Map.SetMapTile(i, y, Floor);
+                Map.SetTile(i, y, Floor);
             }
         }
 
@@ -105,7 +105,7 @@ namespace RoguelikeBase.Map.Generators
         {
             for (int j = Math.Min(y1, y2); j <= Math.Max(y1, y2); j++)
             {
-                Map.SetMapTile(x, j, Floor);
+                Map.SetTile(x, j, Floor);
             }
         }
     }

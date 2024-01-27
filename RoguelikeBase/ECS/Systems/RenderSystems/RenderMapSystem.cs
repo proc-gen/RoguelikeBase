@@ -24,7 +24,7 @@ namespace RoguelikeBase.ECS.Systems.RenderSystems
             {
                 for (int j = 0; j < map.Height; j++)
                 {
-                    var tile = map.GetMapTile(i, j);
+                    var tile = map.GetTile(i, j);
                     if (World.PlayerFov.Contains(new Point(i, j)))
                     {
                         screen.Surface[i, j].Background = tile.BackgroundColor;

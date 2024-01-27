@@ -28,7 +28,7 @@ namespace RoguelikeBase.ECS.Systems.UpdateSystems
 
                 if (!playerInput.SkipTurn)
                 {
-                    var nextTile = map.GetMapTile(playerPosition.Point + playerInput.Direction);
+                    var nextTile = map.GetTile(playerPosition.Point + playerInput.Direction);
                     if(nextTile.BaseTileType != Constants.BaseTileTypes.Wall)
                     {
                         playerPosition.Point += playerInput.Direction;

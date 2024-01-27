@@ -11,7 +11,7 @@ namespace RoguelikeBase.Map.Generators
         static Tile Wall = new Tile()
         {
             BaseTileType = Constants.BaseTileTypes.Wall,
-            BackgroundColor = new Color(.3f, .3f, .3f)
+            BackgroundColor = new Color(0f, 0f, .5f)
         };
         static Tile Floor = new Tile()
         {
@@ -35,11 +35,11 @@ namespace RoguelikeBase.Map.Generators
                 {
                     if (i == 0 || j == 0 || i == (Map.Width - 1) || j == (Map.Height - 1))
                     {
-                        Map.SetMapTile(i, j, Wall);
+                        Map.SetTile(i, j, Wall);
                     }
                     else
                     {
-                        Map.SetMapTile(i, j, Floor);
+                        Map.SetTile(i, j, Floor);
                     }
                 }
             }
@@ -52,7 +52,7 @@ namespace RoguelikeBase.Map.Generators
                 int y = Random.Next(1, Map.Height - 1);
                 if (x != Map.Width / 2 && y != Map.Height / 2)
                 {
-                    Map.SetMapTile(x, y, Wall);
+                    Map.SetTile(x, y, Wall);
                 }
             }
 

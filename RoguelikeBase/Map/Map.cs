@@ -19,24 +19,24 @@ namespace RoguelikeBase.Map
             MapGrid = new Tile[Width * Height];
         }
 
-        public Tile GetMapTile(int x, int y)
+        public Tile GetTile(int x, int y)
         {
             return MapGrid[y * Width + x];
         }
 
-        public Tile GetMapTile(Point point)
+        public Tile GetTile(Point point)
         {
-            return GetMapTile(point.X, point.Y);
+            return GetTile(point.X, point.Y);
         }
 
-        public void SetMapTile(int x, int y, Tile tile)
+        public void SetTile(int x, int y, Tile tile)
         {
             MapGrid[y * Width + x] = tile;
         }
 
-        public void SetMapTile(Point point, Tile tile)
+        public void SetTile(Point point, Tile tile)
         {
-            SetMapTile(point.X, point.Y, tile);
+            SetTile(point.X, point.Y, tile);
         }
     }
 }
