@@ -50,7 +50,7 @@ namespace RoguelikeBase.Map.Generators
 
                 Rectangle room = new Rectangle(x, y, roomWidth, roomHeight);
                 bool canAdd = true;
-                if (Rooms.Any() && Rooms.Exists(a => a.Contains(room)))
+                if (Rooms.Any() && Rooms.Exists(a => a.Intersects(room)))
                 {
                     canAdd = false;
                 }
