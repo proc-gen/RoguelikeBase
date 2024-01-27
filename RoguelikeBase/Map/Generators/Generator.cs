@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RoguelikeBase.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,5 +20,6 @@ namespace RoguelikeBase.Map.Generators
         public abstract void Generate();
 
         public abstract Point GetPlayerStartingPosition();
+        public abstract void SpawnEntitiesForMap(GameWorld world);
     }
 }

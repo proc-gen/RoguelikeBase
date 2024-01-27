@@ -6,6 +6,7 @@ using RoguelikeBase.ECS.Systems.RenderSystems;
 using RoguelikeBase.ECS.Systems.UpdateSystems;
 using RoguelikeBase.Map;
 using RoguelikeBase.Map.Generators;
+using RoguelikeBase.Map.Spawners;
 using RoguelikeBase.Scenes;
 using RoguelikeBase.UI.Extensions;
 using RoguelikeBase.Utils;
@@ -53,13 +54,8 @@ namespace RoguelikeBase.UI
         private void StartNewGame()
         {
             generator.Generate();
-            world.PlayerRef =  world.World.Create(
-                new Player(), 
-                new Position() { Point = generator.GetPlayerStartingPosition() },
-                new PlayerInput(),
-                new Renderable() { Color = Color.DarkGreen, Glyph = '@' },
-                new ViewDistance() { Distance = 7 }
-            ).Reference();
+            new PlayerSpawner().SpawnPlayer(world, generator.GetPlayerStartingPosition());
+            generator.SpawnEntitiesForMap(world);
 
             world.GameLog.Add("Welcome traveler");
             world.Maps.Add("map", generator.Map);

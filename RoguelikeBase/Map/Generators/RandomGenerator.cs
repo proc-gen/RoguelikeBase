@@ -1,4 +1,6 @@
-﻿using System;
+﻿using RoguelikeBase.Map.Spawners;
+using RoguelikeBase.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -61,6 +63,23 @@ namespace RoguelikeBase.Map.Generators
         public override Point GetPlayerStartingPosition()
         {
             return Rooms.First().Center;
+        }
+
+        public override void SpawnEntitiesForMap(GameWorld world)
+        {
+            Random random = new Random();
+            EnemySpawner spawner = new EnemySpawner();
+            var room = Rooms.First();
+
+            int numSpawns = random.Next(0, 4);
+            HashSet<Point> spawnLocations = new HashSet<Point>();
+
+            while (spawnLocations.Count < numSpawns)
+            {
+                spawnLocations.Add(new Point(room.X + random.Next(1, room.Width), room.Y + random.Next(1, room.Height)));
+            }
+
+            spawner.SpawnEntitiesForPoints(world, spawnLocations);
         }
     }
 }
