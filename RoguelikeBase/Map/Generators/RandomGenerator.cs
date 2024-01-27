@@ -11,7 +11,7 @@ namespace RoguelikeBase.Map.Generators
         static Tile Wall = new Tile()
         {
             BaseTileType = Constants.BaseTileTypes.Wall,
-            BackgroundColor = new Color(.1f, .1f, .1f)
+            BackgroundColor = new Color(.3f, .3f, .3f)
         };
         static Tile Floor = new Tile()
         {
