@@ -76,7 +76,11 @@ namespace RoguelikeBase.Map.Generators
 
             while (spawnLocations.Count < numSpawns)
             {
-                spawnLocations.Add(new Point(room.X + random.Next(1, room.Width), room.Y + random.Next(1, room.Height)));
+                var point = new Point(room.X + random.Next(1, room.Width), room.Y + random.Next(1, room.Height));
+                if (Map.GetTile(point).BaseTileType != Constants.BaseTileTypes.Wall)
+                {
+                    spawnLocations.Add(point);
+                }
             }
 
             spawner.SpawnEntitiesForPoints(world, spawnLocations);
