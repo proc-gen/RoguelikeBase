@@ -18,7 +18,8 @@ namespace RoguelikeBase.Map.Spawners
             {
                 var reference = world.World.Create(new Position() { Point = point }, 
                                     new ViewDistance() { Distance = 5 }, 
-                                    new Renderable() { Color = Color.Red, Glyph = 'g' }).Reference();
+                                    new Renderable() { Color = Color.Red, Glyph = 'g' },
+                                    new Input() { CanAct = true }).Reference();
                 world.PhysicsWorld.AddEntity(reference, point);
             }            
         }

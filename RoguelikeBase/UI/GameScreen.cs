@@ -47,8 +47,8 @@ namespace RoguelikeBase.UI
             renderSystems.Add(new RenderMapSystem(world));
             renderSystems.Add(new RenderRenderablesSystem(world));
 
-
-            updateSystems.Add(new UpdatePlayerInputSystem(world));
+            updateSystems.Add(new NonPlayerInputSystem(world));
+            updateSystems.Add(new EntityActSystem(world));
         }
 
         private void StartNewGame()
@@ -120,7 +120,7 @@ namespace RoguelikeBase.UI
 
         private void RequestMoveDirection(Direction direction)
         {
-            var input = world.PlayerRef.Entity.Get<PlayerInput>();
+            var input = world.PlayerRef.Entity.Get<Input>();
             if (direction != Direction.None)
             {
                 input.Direction = new Point(direction.DeltaX, direction.DeltaY);

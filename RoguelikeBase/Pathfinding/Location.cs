@@ -18,5 +18,10 @@ namespace RoguelikeBase.Pathfinding
         {
             return Point == other.Point;
         }
+
+        public override string ToString()
+        {
+            return Point.ToString();
+        }
     }
 }

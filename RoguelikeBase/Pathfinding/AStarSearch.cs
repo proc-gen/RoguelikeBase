@@ -7,60 +7,56 @@ namespace RoguelikeBase.Pathfinding
         where L : ILocation<L>
     {
         IWeightedGraph<L> Graph { get; set; }
-        Dictionary<LocationPair<L>, L> PrecomputedPaths { get; set; }
         public AStarSearch(IWeightedGraph<L> graph)
         {
             Graph = graph;
-            PrecomputedPaths = new Dictionary<LocationPair<L>, L>();
         }
 
-        public L RunSearch(L start, L end)
+        public Point RunSearch(L start, L end)
         {
             if (start == null)
             {
-                return end;
-            }
-            LocationPair<L> pair = new LocationPair<L>() { Start = start, End = end };
-            if (PrecomputedPaths.TryGetValue(pair, out L value))
-            {
-                return value;
+                return end.Point;
             }
 
-            Dictionary<L, L> cameFrom = new Dictionary<L, L>();
-            Dictionary<L, float> costSoFar = new Dictionary<L, float>();
-            PriorityQueue<L, float> frontier = new PriorityQueue<L, float>();
+            Dictionary<Point, Point> cameFrom = new Dictionary<Point, Point>();
+            Dictionary<Point, float> costSoFar = new Dictionary<Point, float>();
+            PriorityQueue<Point, float> frontier = new PriorityQueue<Point, float>();
 
-            frontier.Enqueue(start, 0);
-            cameFrom[start] = start;
-            costSoFar[start] = 0;
+            frontier.Enqueue(start.Point, 0);
+            cameFrom[start.Point] = start.Point;
+            costSoFar[start.Point] = 0;
 
-            while (frontier.Count > 0 && !frontier.Peek().Equals(end))
+            while (frontier.Count > 0 && frontier.Peek() != end.Point)
             {
                 var current = frontier.Dequeue();
 
-                foreach (var next in Graph.GetNeighbors(current))
+                foreach (var next in Graph.GetNeighbors(current, end))
                 {
                     float newCost = costSoFar[current] + Graph.Cost(current, next);
-                    if (!costSoFar.TryGetValue(next, out float nextCost) || newCost < nextCost)
+                    if (!costSoFar.TryGetValue(next.Point, out float nextCost) || newCost < nextCost)
                     {
-                        costSoFar[next] = newCost;
+                        costSoFar[next.Point] = newCost;
                         float priority = newCost + Heuristic(next, end);
-                        frontier.Enqueue(next, priority);
-                        cameFrom[next] = current;
+                        frontier.Enqueue(next.Point, priority);
+                        cameFrom[next.Point] = current;
                     }
                 }
             }
 
-            var currentNode = end;
-            var nextNode = cameFrom[end];
-            while (!nextNode.Equals(start))
+            var currentNode = end.Point;
+            if (cameFrom.ContainsKey(end.Point))
             {
-                currentNode = nextNode;
-                nextNode = cameFrom[nextNode];
-            }
+                var nextNode = cameFrom[end.Point];
+                while (nextNode != start.Point)
+                {
+                    currentNode = nextNode;
+                    nextNode = cameFrom[nextNode];
+                }
 
-            PrecomputedPaths[pair] = currentNode;
-            return currentNode;
+                return currentNode;
+            }
+            return start.Point;
         }
 
         private static float Heuristic(L a, L b)

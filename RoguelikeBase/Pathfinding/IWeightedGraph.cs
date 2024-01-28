@@ -6,6 +6,8 @@ namespace RoguelikeBase.Pathfinding
         where L : ILocation<L>
     {
         float Cost(L a, L b);
-        IEnumerable<L> GetNeighbors(L id);
+        float Cost(Point a, L b);
+        IEnumerable<L> GetNeighbors(L id, L end);
+        IEnumerable<L> GetNeighbors(Point id, L end);
     }
 }

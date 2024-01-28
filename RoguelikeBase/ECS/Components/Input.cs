@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace RoguelikeBase.ECS.Components
 {
-    public struct PlayerInput
+    public struct Input
     {
         public bool SkipTurn { get; set; }
         public Point Direction { get; set; }
         public bool Processed { get; set; }
+        public bool CanAct { get; set; }
     }
 }

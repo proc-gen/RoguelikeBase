@@ -18,7 +18,7 @@ namespace RoguelikeBase.Map.Spawners
             world.PlayerRef = world.World.Create(
                 new Player(),
                 new Position() { Point = startingPosition },
-                new PlayerInput(),
+                new Input() { CanAct = true },
                 new Renderable() { Color = Color.DarkGreen, Glyph = '@' },
                 new ViewDistance() { Distance = 7 }
             ).Reference();

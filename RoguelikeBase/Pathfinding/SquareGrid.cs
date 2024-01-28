@@ -44,16 +44,26 @@ namespace RoguelikeBase.Pathfinding
             return 1;
         }
 
-        public IEnumerable<Location> GetNeighbors(Location id)
+        public float Cost(Point a, Location b)
+        {
+            return Cost(new Location(a), b);
+        }
+
+        public IEnumerable<Location> GetNeighbors(Location id, Location end)
         {
             foreach (var direction in AdjacentLocations)
             {
                 Location next = new Location(id.Point + direction.Point);
-                if (InBounds(next) && Passable(next))
+                if (InBounds(next) && (Passable(next) || next.Point == end.Point))
                 {
                     yield return next;
                 }
             }
+        }
+
+        public IEnumerable<Location> GetNeighbors(Point id, Location end)
+        {
+            return GetNeighbors(new Location(id), end);
         }
     }
 }
