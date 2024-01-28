@@ -70,14 +70,18 @@ namespace RoguelikeBase.UI
             {
                 HandleKeyboard();
             }
-            else if(world.CurrentState == GameState.PlayerTurn) 
+            else if(world.CurrentState == GameState.PlayerTurn
+                    || world.CurrentState == GameState.MonsterTurn) 
             {
                 foreach(var system in updateSystems)
                 {
                     system.Update(delta);
                 }
 
-                world.CurrentState = GameState.AwaitingPlayerInput;
+                world.CurrentState = 
+                    world.CurrentState == GameState.PlayerTurn 
+                        ? GameState.MonsterTurn 
+                        : GameState.AwaitingPlayerInput;
             }
 
             base.Update(delta);

@@ -1,0 +1,59 @@
+﻿using Arch.Core;
+using RoguelikeBase.Utils;
+using System.Collections.Generic;
+
+namespace RoguelikeBase.Pathfinding
+{
+    public class SquareGrid : IWeightedGraph<Location>
+    {
+        public static readonly Location[] AdjacentLocations = new[]
+        {
+            new Location(new Point(Direction.Up.DeltaX, Direction.Up.DeltaY)),
+            new Location(new Point(Direction.Down.DeltaX, Direction.Down.DeltaY)),
+            new Location(new Point(Direction.Left.DeltaX, Direction.Left.DeltaY)),
+            new Location(new Point(Direction.Right.DeltaX, Direction.Right.DeltaY))
+        };
+
+        public GameWorld World { get; set; }
+        
+        public SquareGrid(GameWorld world)
+        {
+            World = world;
+        }
+
+        public bool InBounds(Location id)
+        {
+            return 0 <= id.Point.X && id.Point.X < World.Maps[World.CurrentMap].Width
+                && 0 <= id.Point.Y && id.Point.Y < World.Maps[World.CurrentMap].Height;
+        }
+
+        public bool Passable(Location id)
+        {
+            var tile = World.Maps[World.CurrentMap].GetTile(id.Point);
+            if(tile.BaseTileType == Constants.BaseTileTypes.Wall)
+            {
+                return false;
+            }
+
+            var entitiesAtLocation = World.PhysicsWorld.GetEntitiesAtLocation(id.Point);
+            return entitiesAtLocation == null || entitiesAtLocation.Count == 0;
+        }
+
+        public float Cost(Location a, Location b)
+        {
+            return 1;
+        }
+
+        public IEnumerable<Location> GetNeighbors(Location id)
+        {
+            foreach (var direction in AdjacentLocations)
+            {
+                Location next = new Location(id.Point + direction.Point);
+                if (InBounds(next) && Passable(next))
+                {
+                    yield return next;
+                }
+            }
+        }
+    }
+}
