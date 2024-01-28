@@ -44,6 +44,7 @@ namespace RoguelikeBase.ECS.Systems.UpdateSystems
                         input.SkipTurn = true;
                         input.Direction = Point.None;
                     }
+                    input.Processed = false;
                 });
             }
         }

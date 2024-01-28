@@ -49,6 +49,8 @@ namespace RoguelikeBase.UI
 
             updateSystems.Add(new NonPlayerInputSystem(world));
             updateSystems.Add(new EntityActSystem(world));
+            updateSystems.Add(new MeleeAttackSystem(world));
+            updateSystems.Add(new DeathSystem(world));
         }
 
         private void StartNewGame()
