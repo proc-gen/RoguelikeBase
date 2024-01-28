@@ -1,4 +1,5 @@
-﻿using RoguelikeBase.ECS.Components;
+﻿using Arch.Core.Extensions;
+using RoguelikeBase.ECS.Components;
 using RoguelikeBase.Utils;
 using System;
 using System.Collections.Generic;
@@ -15,9 +16,10 @@ namespace RoguelikeBase.Map.Spawners
         {
             foreach (var point in points)
             {
-                world.World.Create(new Position() { Point = point }, 
+                var reference = world.World.Create(new Position() { Point = point }, 
                                     new ViewDistance() { Distance = 5 }, 
-                                    new Renderable() { Color = Color.Red, Glyph = 'g' });
+                                    new Renderable() { Color = Color.Red, Glyph = 'g' }).Reference();
+                world.PhysicsWorld.AddEntity(reference, point);
             }            
         }
     }

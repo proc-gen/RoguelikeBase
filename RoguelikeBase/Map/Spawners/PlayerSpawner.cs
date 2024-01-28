@@ -22,6 +22,8 @@ namespace RoguelikeBase.Map.Spawners
                 new Renderable() { Color = Color.DarkGreen, Glyph = '@' },
                 new ViewDistance() { Distance = 7 }
             ).Reference();
+
+            world.PhysicsWorld.AddEntity(world.PlayerRef, startingPosition);
         }
     }
 }

@@ -31,7 +31,12 @@ namespace RoguelikeBase.ECS.Systems.UpdateSystems
                     var nextTile = map.GetTile(playerPosition.Point + playerInput.Direction);
                     if(nextTile.BaseTileType != Constants.BaseTileTypes.Wall)
                     {
-                        playerPosition.Point += playerInput.Direction;
+                        var entitiesAtPosition = World.PhysicsWorld.GetEntitiesAtLocation(playerPosition.Point + playerInput.Direction);
+                        if (entitiesAtPosition == null || entitiesAtPosition.Count == 0)
+                        {
+                            World.PhysicsWorld.MoveEntity(World.PlayerRef, playerPosition.Point, playerPosition.Point + playerInput.Direction);
+                            playerPosition.Point += playerInput.Direction;
+                        }
                     }
                 }
 
