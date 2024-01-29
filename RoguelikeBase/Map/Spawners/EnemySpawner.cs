@@ -20,7 +20,16 @@ namespace RoguelikeBase.Map.Spawners
                                     new ViewDistance() { Distance = 5 }, 
                                     new Renderable() { Color = Color.Red, Glyph = 'g' },
                                     new Input() { CanAct = true },
-                                    new Name() { EntityName = "Goblin" }).Reference();
+                                    new Name() { EntityName = "Goblin" },
+                                    new CombatStats()
+                                    {
+                                        MaxHealth = 5,
+                                        CurrentHealth = 5,
+                                        BaseStrength = 10,
+                                        CurrentStrength = 10,
+                                        BaseArmor = 0,
+                                        CurrentArmor = 0,
+                                    }).Reference();
                 world.PhysicsWorld.AddEntity(reference, point);
             }            
         }

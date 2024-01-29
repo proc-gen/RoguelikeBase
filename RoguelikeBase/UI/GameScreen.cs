@@ -80,10 +80,19 @@ namespace RoguelikeBase.UI
                     system.Update(delta);
                 }
 
-                world.CurrentState = 
-                    world.CurrentState == GameState.PlayerTurn 
-                        ? GameState.MonsterTurn 
-                        : GameState.AwaitingPlayerInput;
+                switch (world.CurrentState)
+                {
+                    case GameState.PlayerTurn:
+                        world.CurrentState = GameState.MonsterTurn; 
+                        break;
+                    case GameState.MonsterTurn:
+                        world.CurrentState = GameState.AwaitingPlayerInput;
+                        break;
+                    case GameState.PlayerDeath:
+                        GoToMainMenu();
+                        break;
+
+                }
             }
 
             base.Update(delta);
@@ -95,7 +104,7 @@ namespace RoguelikeBase.UI
 
             if(keyboard.IsKeyPressed(SadConsole.Input.Keys.Escape))
             {
-                RootScreen.SwitchScreen(Screens.MainMenu, true);
+                GoToMainMenu();
             }
 
             if(keyboard.IsKeyPressed(SadConsole.Input.Keys.Up))
@@ -118,6 +127,11 @@ namespace RoguelikeBase.UI
             {
                 RequestMoveDirection(Direction.None);
             }
+        }
+
+        private void GoToMainMenu()
+        {
+            RootScreen.SwitchScreen(Screens.MainMenu, true);
         }
 
         private void RequestMoveDirection(Direction direction)

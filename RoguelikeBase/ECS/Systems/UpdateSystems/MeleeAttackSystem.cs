@@ -23,15 +23,41 @@ namespace RoguelikeBase.ECS.Systems.UpdateSystems
             World.World.Query(in meleeAttacksQuery, (ref MeleeAttack meleeAttack) =>
             {
                 var sourceName = meleeAttack.Source.Entity.Get<Name>();
+                var sourceStats = meleeAttack.Source.Entity.Get<CombatStats>();
                 var targetName = meleeAttack.Target.Entity.Get<Name>();
-                if (meleeAttack.Source.Entity.Has<Player>())
+                var targetStats = meleeAttack.Target.Entity.Get<CombatStats>();
+                
+                var damage = CalculateDamage(sourceStats, targetStats);
+                if (damage > 0)
                 {
-                    World.GameLog.Add(string.Concat(sourceName.EntityName, " killed a ", targetName.EntityName, "!"));
-                    meleeAttack.Target.Entity.Add(new Dead());
+                    targetStats.CurrentHealth = Math.Max(0, targetStats.CurrentHealth - damage);
+                    World.GameLog.Add(string.Concat(sourceName.EntityName, " hits ", targetName.EntityName, " for ", damage, " health."));
+                    if(targetStats.CurrentHealth == 0)
+                    {
+                        World.GameLog.Add(string.Concat(sourceName.EntityName, " killed ", targetName.EntityName, "!"));
+                        if (meleeAttack.Source.Entity.Has<Player>())
+                        {
+                            meleeAttack.Target.Entity.Add(new Dead());
+                        }
+                        else
+                        {
+                            World.CurrentState = Constants.GameState.PlayerDeath;
+                        }
+                    }
+                    meleeAttack.Target.Entity.Set(targetStats);
+                }
+                else
+                {
+                    World.GameLog.Add(string.Concat(sourceName.EntityName, " is unable to hurt ", targetName.EntityName, "."));
                 }
             });
 
             World.World.Destroy(in meleeAttacksQuery);
+        }
+
+        private int CalculateDamage(CombatStats sourceStats,  CombatStats targetStats)
+        {
+            return (int)((sourceStats.CurrentStrength - 10f) / 2f + 1f) - targetStats.CurrentArmor;
         }
     }
 }

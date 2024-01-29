@@ -21,7 +21,16 @@ namespace RoguelikeBase.Map.Spawners
                 new Input() { CanAct = true },
                 new Renderable() { Color = Color.DarkGreen, Glyph = '@' },
                 new ViewDistance() { Distance = 7 },
-                new Name() { EntityName = "Player" }
+                new Name() { EntityName = "Player" },
+                new CombatStats()
+                {
+                    MaxHealth = 30,
+                    CurrentHealth = 30,
+                    BaseStrength = 14,
+                    CurrentStrength = 14,
+                    BaseArmor = 0,
+                    CurrentArmor = 0,
+                }
             ).Reference();
 
             world.PhysicsWorld.AddEntity(world.PlayerRef, startingPosition);
