@@ -20,7 +20,8 @@ namespace RoguelikeBase.Map.Spawners
                 new Position() { Point = startingPosition },
                 new Input() { CanAct = true },
                 new Renderable() { Color = Color.DarkGreen, Glyph = '@' },
-                new ViewDistance() { Distance = 7 }
+                new ViewDistance() { Distance = 7 },
+                new Name() { EntityName = "Player" }
             ).Reference();
 
             world.PhysicsWorld.AddEntity(world.PlayerRef, startingPosition);

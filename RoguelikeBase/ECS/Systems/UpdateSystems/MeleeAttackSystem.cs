@@ -22,9 +22,11 @@ namespace RoguelikeBase.ECS.Systems.UpdateSystems
         {
             World.World.Query(in meleeAttacksQuery, (ref MeleeAttack meleeAttack) =>
             {
+                var sourceName = meleeAttack.Source.Entity.Get<Name>();
+                var targetName = meleeAttack.Target.Entity.Get<Name>();
                 if (meleeAttack.Source.Entity.Has<Player>())
                 {
-                    World.GameLog.Add("You killed a goblin!");
+                    World.GameLog.Add(string.Concat(sourceName.EntityName, " killed a ", targetName.EntityName, "!"));
                     meleeAttack.Target.Entity.Add(new Dead());
                 }
             });
