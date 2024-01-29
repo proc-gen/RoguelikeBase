@@ -30,10 +30,12 @@ namespace RoguelikeBase.ECS.Systems.RenderSystems
             }
 
             var stats = World.PlayerRef.Entity.Get<CombatStats>();
+            var position = World.PlayerRef.Entity.Get<Position>().Point;
             screen.DrawRLTKStyleBox(GameSettings.GAME_WIDTH / 2, GameSettings.GAME_HEIGHT - 11, GameSettings.GAME_WIDTH / 2 - 1, 10, Color.White, Color.Black);
             screen.Print(GameSettings.GAME_WIDTH / 2 + 2, GameSettings.GAME_HEIGHT - 9, string.Concat("Health: ", stats.CurrentHealth, " / ", stats.MaxHealth));
             screen.Print(GameSettings.GAME_WIDTH / 2 + 2, GameSettings.GAME_HEIGHT - 7, string.Concat("Strength: ", stats.CurrentStrength));
             screen.Print(GameSettings.GAME_WIDTH / 2 + 2, GameSettings.GAME_HEIGHT - 5, string.Concat("Armor: ", stats.CurrentArmor));
+            screen.Print(GameSettings.GAME_WIDTH / 2 + 2, GameSettings.GAME_HEIGHT - 3, string.Concat("Position: ", position));
 
         }
     }
