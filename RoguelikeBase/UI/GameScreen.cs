@@ -34,6 +34,7 @@ namespace RoguelikeBase.UI
         {
             RootScreen = rootScreen;
             screen = new ScreenSurface(GameSettings.GAME_WIDTH, GameSettings.GAME_HEIGHT);
+
             world = new GameWorld();
             generator = new RoomsAndCorridorsGenerator(GameSettings.GAME_WIDTH, GameSettings.GAME_HEIGHT - 11);
             
