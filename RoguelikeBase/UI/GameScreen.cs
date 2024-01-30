@@ -9,7 +9,9 @@ using RoguelikeBase.Map.Generators;
 using RoguelikeBase.Map.Spawners;
 using RoguelikeBase.Scenes;
 using RoguelikeBase.UI.Extensions;
+using RoguelikeBase.UI.Windows;
 using RoguelikeBase.Utils;
+using SadConsole.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +32,8 @@ namespace RoguelikeBase.UI
         List<IRenderSystem> renderSystems = new List<IRenderSystem>();
         List<IUpdateSystem> updateSystems = new List<IUpdateSystem>();
 
+        InventoryWindow inventory;
+
         public GameScreen(RootScreen rootScreen)
         {
             RootScreen = rootScreen;
@@ -37,7 +41,12 @@ namespace RoguelikeBase.UI
 
             world = new GameWorld();
             generator = new RoomsAndCorridorsGenerator(GameSettings.GAME_WIDTH * 2, GameSettings.GAME_HEIGHT * 2);
-            
+
+            inventory = new InventoryWindow(GameSettings.GAME_WIDTH / 4, GameSettings.GAME_HEIGHT / 4, GameSettings.GAME_WIDTH / 2, GameSettings.GAME_HEIGHT / 2);
+
+            Children.Add(screen);
+            Children.Add(inventory.Console);
+
             InitializeECS();
             StartNewGame();
         }
@@ -103,14 +112,26 @@ namespace RoguelikeBase.UI
         {
             var keyboard = Game.Instance.Keyboard;
 
-            if(keyboard.IsKeyPressed(SadConsole.Input.Keys.Escape))
+            if(inventory.Visible)
+            {
+                HandleInventoryKeyboard(keyboard);
+            }
+            else
+            {
+                HandleInGameKeyboard(keyboard);   
+            }
+        }
+
+        private void HandleInGameKeyboard(Keyboard keyboard)
+        {
+            if (keyboard.IsKeyPressed(SadConsole.Input.Keys.Escape))
             {
                 GoToMainMenu();
             }
 
-            if(keyboard.IsKeyPressed(SadConsole.Input.Keys.Up))
+            if (keyboard.IsKeyPressed(SadConsole.Input.Keys.Up))
             {
-                RequestMoveDirection(Direction.Up);                
+                RequestMoveDirection(Direction.Up);
             }
             else if (keyboard.IsKeyPressed(SadConsole.Input.Keys.Down))
             {
@@ -124,9 +145,21 @@ namespace RoguelikeBase.UI
             {
                 RequestMoveDirection(Direction.Right);
             }
-            else if(keyboard.IsKeyPressed(SadConsole.Input.Keys.Space))
+            else if (keyboard.IsKeyPressed(SadConsole.Input.Keys.Space))
             {
                 RequestMoveDirection(Direction.None);
+            }
+            else if(keyboard.IsKeyPressed(Keys.I))
+            {
+                inventory.Visible = true;
+            }
+        }
+
+        private void HandleInventoryKeyboard(Keyboard keyboard)
+        {
+            if(keyboard.IsKeyPressed(Keys.Escape))
+            {
+                inventory.Visible = false;
             }
         }
 
@@ -161,7 +194,13 @@ namespace RoguelikeBase.UI
             {
                 renderSystem.Render(screen);
             }
+            
             screen.Render(delta);
+
+            if (inventory.Visible)
+            {
+                inventory.Render(delta);
+            }
         }
     }
 }
