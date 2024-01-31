@@ -34,6 +34,18 @@ namespace RoguelikeBase.Map.Spawners
             ).Reference();
 
             world.PhysicsWorld.AddEntity(world.PlayerRef, startingPosition);
+
+            for (int i = 0; i < 3; i++)
+            {
+                world.World.Create(
+                    new Item(),
+                    new Owner() { OwnerReference = world.PlayerRef },
+                    new Potion(),
+                    new Health() { Amount = 5 },
+                    new Consumable(),
+                    new Name() { EntityName = "Health Potion" }
+                );
+            }
         }
     }
 }

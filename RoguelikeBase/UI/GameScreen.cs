@@ -42,7 +42,12 @@ namespace RoguelikeBase.UI
             world = new GameWorld();
             generator = new RoomsAndCorridorsGenerator(GameSettings.GAME_WIDTH * 2, GameSettings.GAME_HEIGHT * 2);
 
-            inventory = new InventoryWindow(GameSettings.GAME_WIDTH / 4, GameSettings.GAME_HEIGHT / 4, GameSettings.GAME_WIDTH / 2, GameSettings.GAME_HEIGHT / 2);
+            inventory = new InventoryWindow(
+                GameSettings.GAME_WIDTH / 4, 
+                GameSettings.GAME_HEIGHT / 4 - 5, 
+                GameSettings.GAME_WIDTH / 2, 
+                GameSettings.GAME_HEIGHT / 2,
+                world);
 
             Children.Add(screen);
             Children.Add(inventory.Console);
@@ -105,6 +110,7 @@ namespace RoguelikeBase.UI
                 }
             }
 
+            inventory.Update(delta);
             base.Update(delta);
         }
 
