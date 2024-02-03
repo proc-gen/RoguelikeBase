@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SadConsole.Input;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,6 +20,8 @@ namespace RoguelikeBase.UI.Windows
         }
 
         public abstract void Update(TimeSpan delta);
+
+        public abstract void HandleKeyboard(Keyboard keyboard);
 
         public abstract void Render(TimeSpan delta);
     }

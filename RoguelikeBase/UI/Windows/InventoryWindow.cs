@@ -4,6 +4,7 @@ using RoguelikeBase.ECS.Components;
 using RoguelikeBase.UI.Extensions;
 using RoguelikeBase.Utils;
 using SadConsole;
+using SadConsole.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,7 @@ namespace RoguelikeBase.UI.Windows
     {
         GameWorld World;
         List<EntityReference> InventoryItems;
+        int selectedItem = 0;
         int ownedItems = 0;
         QueryDescription ownedItemsQuery = new QueryDescription().WithAll<Owner>();
         public InventoryWindow(int x, int y, int width, int height, GameWorld world) 
@@ -41,11 +43,52 @@ namespace RoguelikeBase.UI.Windows
             }
         }
 
+        public override void HandleKeyboard(Keyboard keyboard)
+        {
+            if (keyboard.IsKeyPressed(Keys.Escape))
+            {
+                Visible = false;
+            }
+
+            else if (keyboard.IsKeyPressed(Keys.Up))
+            {
+                selectedItem = (selectedItem - 1) % InventoryItems.Count;
+            }
+            else if (keyboard.IsKeyPressed(Keys.Down))
+            {
+                selectedItem = (selectedItem + 1) % InventoryItems.Count;
+            }
+            else if (keyboard.IsKeyPressed(Keys.U))
+            {
+                UseItem(InventoryItems[selectedItem]);
+            }
+            else if (keyboard.IsKeyPressed(Keys.D))
+            {
+                DropItem(InventoryItems[selectedItem]);
+            }
+        }
+
+        private void UseItem(EntityReference item)
+        {
+            if(item.Entity.Has<Consumable>())
+            {
+                item.Entity.Add(new WantToUseItem());
+                World.StartPlayerTurn(Point.None);
+                Visible = false;
+            }
+        }
+
+        private void DropItem(EntityReference item)
+        {
+
+        }
+
         public override void Render(TimeSpan delta)
         {
             Console.Clear();
             DrawBoxAndTitle();
             DrawInventoryItems();
+            DrawItemSelector();
             Console.Render(delta);
         }
 
@@ -59,8 +102,13 @@ namespace RoguelikeBase.UI.Windows
         {
             for(int i = 0; i < InventoryItems.Count; i++)
             {
-                Console.Print(3, 5 + i, string.Concat((char)('A' + i), ": ", InventoryItems[i].Entity.Get<Name>().EntityName));
+                Console.Print(6, 5 + i, string.Concat(1 + i, ": ", InventoryItems[i].Entity.Get<Name>().EntityName));
             }
+        }
+
+        private void DrawItemSelector()
+        {
+            Console.Print(3, selectedItem + 5, "->");
         }
     }
 }

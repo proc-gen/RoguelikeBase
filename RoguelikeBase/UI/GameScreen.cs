@@ -63,6 +63,7 @@ namespace RoguelikeBase.UI
             renderSystems.Add(new RenderRenderablesSystem(world));
 
             updateSystems.Add(new NonPlayerInputSystem(world));
+            updateSystems.Add(new UseItemSystem(world));
             updateSystems.Add(new EntityActSystem(world));
             updateSystems.Add(new MeleeAttackSystem(world));
             updateSystems.Add(new DeathSystem(world));
@@ -120,7 +121,7 @@ namespace RoguelikeBase.UI
 
             if(inventory.Visible)
             {
-                HandleInventoryKeyboard(keyboard);
+                inventory.HandleKeyboard(keyboard);
             }
             else
             {
@@ -130,42 +131,33 @@ namespace RoguelikeBase.UI
 
         private void HandleInGameKeyboard(Keyboard keyboard)
         {
-            if (keyboard.IsKeyPressed(SadConsole.Input.Keys.Escape))
+            if (keyboard.IsKeyPressed(Keys.Escape))
             {
                 GoToMainMenu();
             }
-
-            if (keyboard.IsKeyPressed(SadConsole.Input.Keys.Up))
+            else if (keyboard.IsKeyPressed(Keys.Up))
             {
                 RequestMoveDirection(Direction.Up);
             }
-            else if (keyboard.IsKeyPressed(SadConsole.Input.Keys.Down))
+            else if (keyboard.IsKeyPressed(Keys.Down))
             {
                 RequestMoveDirection(Direction.Down);
             }
-            else if (keyboard.IsKeyPressed(SadConsole.Input.Keys.Left))
+            else if (keyboard.IsKeyPressed(Keys.Left))
             {
                 RequestMoveDirection(Direction.Left);
             }
-            else if (keyboard.IsKeyPressed(SadConsole.Input.Keys.Right))
+            else if (keyboard.IsKeyPressed(Keys.Right))
             {
                 RequestMoveDirection(Direction.Right);
             }
-            else if (keyboard.IsKeyPressed(SadConsole.Input.Keys.Space))
+            else if (keyboard.IsKeyPressed(Keys.Space))
             {
                 RequestMoveDirection(Direction.None);
             }
             else if(keyboard.IsKeyPressed(Keys.I))
             {
                 inventory.Visible = true;
-            }
-        }
-
-        private void HandleInventoryKeyboard(Keyboard keyboard)
-        {
-            if(keyboard.IsKeyPressed(Keys.Escape))
-            {
-                inventory.Visible = false;
             }
         }
 
@@ -176,21 +168,9 @@ namespace RoguelikeBase.UI
 
         private void RequestMoveDirection(Direction direction)
         {
-            var input = world.PlayerRef.Entity.Get<Input>();
-            if (direction != Direction.None)
-            {
-                input.Direction = new Point(direction.DeltaX, direction.DeltaY);
-                input.SkipTurn = false;
-            }
-            else
-            {
-                input.Direction = Point.None; 
-                input.SkipTurn = true;
-            }
-
-            input.Processed = false;
-            world.PlayerRef.Entity.Set(input);
-            world.CurrentState = GameState.PlayerTurn;
+            world.StartPlayerTurn(direction == Direction.None 
+                                    ? Point.None 
+                                    : new Point(direction.DeltaX, direction.DeltaY));
         }
 
         public override void Render(TimeSpan delta)

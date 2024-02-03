@@ -1,5 +1,7 @@
 ﻿using Arch.Core;
+using Arch.Core.Extensions;
 using RoguelikeBase.Constants;
+using RoguelikeBase.ECS.Components;
 using RoguelikeBase.Map;
 using System;
 using System.Collections.Generic;
@@ -28,6 +30,16 @@ namespace RoguelikeBase.Utils
             Maps = new Dictionary<string, Map.Map>();
             CurrentMap = string.Empty;
             PlayerFov = new HashSet<Point>();
+        }
+
+        public void StartPlayerTurn(Point direction)
+        {
+            var input = PlayerRef.Entity.Get<Input>();
+            input.Direction = direction;
+            input.SkipTurn = direction == Point.None;
+            input.Processed = false;
+            PlayerRef.Entity.Set(input);
+            CurrentState = GameState.PlayerTurn;
         }
     }
 }

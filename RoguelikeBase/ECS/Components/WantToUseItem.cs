@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace RoguelikeBase.ECS.Components
 {
-    public struct Potion : IConsumable
+    public struct WantToUseItem
     {
+
     }
 }
