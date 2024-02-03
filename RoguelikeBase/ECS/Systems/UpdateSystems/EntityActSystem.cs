@@ -27,10 +27,10 @@ namespace RoguelikeBase.ECS.Systems.UpdateSystems
 
             switch (World.CurrentState)
             {
-                case Constants.GameState.PlayerTurn:
+                case GameState.PlayerTurn:
                     HandlePlayerTurn(map); 
                     break;
-                case Constants.GameState.MonsterTurn:
+                case GameState.MonsterTurn:
                     HandleMonsterTurn(map); 
                     break;
             }
@@ -62,7 +62,7 @@ namespace RoguelikeBase.ECS.Systems.UpdateSystems
             if (!input.SkipTurn && input.CanAct)
             {
                 var nextTile = map.GetTile(position.Point + input.Direction);
-                if (nextTile.BaseTileType != Constants.BaseTileTypes.Wall)
+                if (nextTile.BaseTileType != BaseTileTypes.Wall)
                 {
                     var entitiesAtPosition = World.PhysicsWorld.GetEntitiesAtLocation(position.Point + input.Direction);
                     if (entitiesAtPosition == null || !entitiesAtPosition.Any(a => a.Entity.Has<Blocker>()))

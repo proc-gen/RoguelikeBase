@@ -82,6 +82,9 @@ namespace RoguelikeBase.UI.Windows
         private void DropItem(EntityReference item)
         {
             var ownerPosition = item.Entity.Get<Owner>().OwnerReference.Entity.Get<Position>();
+            var ownerName = item.Entity.Get<Owner>().OwnerReference.Entity.Get<Name>();
+            var itemName = item.Entity.Get<Name>();
+
             Point targetPosition = Point.None;
             int fovDistanceForDrop = 0;
             do
@@ -105,6 +108,8 @@ namespace RoguelikeBase.UI.Windows
             item.Entity.Remove<Owner>();
             item.Entity.Add(new Position() { Point = targetPosition });
             World.PhysicsWorld.AddEntity(item, targetPosition);
+
+            World.GameLog.Add(string.Concat(ownerName.EntityName, " dropped ", itemName.EntityName));
 
             World.StartPlayerTurn(Point.None);
             Visible = false;

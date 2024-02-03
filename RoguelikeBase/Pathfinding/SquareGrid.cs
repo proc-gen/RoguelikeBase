@@ -1,6 +1,9 @@
 ﻿using Arch.Core;
+using Arch.Core.Extensions;
+using RoguelikeBase.ECS.Components;
 using RoguelikeBase.Utils;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace RoguelikeBase.Pathfinding
 {
@@ -36,7 +39,7 @@ namespace RoguelikeBase.Pathfinding
             }
 
             var entitiesAtLocation = World.PhysicsWorld.GetEntitiesAtLocation(id.Point);
-            return entitiesAtLocation == null || entitiesAtLocation.Count == 0;
+            return entitiesAtLocation == null || !entitiesAtLocation.Any(a => a.Entity.Has<Blocker>());
         }
 
         public float Cost(Location a, Location b)

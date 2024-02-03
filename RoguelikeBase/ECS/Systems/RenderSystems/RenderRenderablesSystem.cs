@@ -1,6 +1,7 @@
 ﻿using Arch.Core;
 using Arch.Core.Extensions;
 using RoguelikeBase.ECS.Components;
+using RoguelikeBase.Map;
 using RoguelikeBase.Utils;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,8 @@ namespace RoguelikeBase.ECS.Systems.RenderSystems
 {
     internal class RenderRenderablesSystem : ArchSystem, IRenderSystem
     {
-        QueryDescription renderablesQuery = new QueryDescription().WithAll<Renderable, Position>();
+        QueryDescription renderItemsQuery = new QueryDescription().WithAll<Renderable, Position, Item>();
+        QueryDescription renderEntitiesQuery = new QueryDescription().WithAll<Renderable, Position>().WithNone<Item>();
 
         public RenderRenderablesSystem(GameWorld world) 
             : base(world)
@@ -27,23 +29,33 @@ namespace RoguelikeBase.ECS.Systems.RenderSystems
             int minX = position.X - GameSettings.GAME_WIDTH / 2;
             int minY = position.Y - GameSettings.GAME_HEIGHT / 2;
 
-            World.World.Query(in renderablesQuery, (ref Renderable renderable, ref Position position) =>
+            World.World.Query(in renderItemsQuery, (ref Renderable renderable, ref Position position) =>
             {
-                if (position.Point.X - minX >= 0
+                RenderRenderable(screen, map, minX, minY, renderable, position);
+            });
+
+            World.World.Query(in renderEntitiesQuery, (ref Renderable renderable, ref Position position) =>
+            {
+                RenderRenderable(screen, map, minX, minY, renderable, position);
+            });
+        }
+
+        private void RenderRenderable(ScreenSurface screen, Map.Map map, int minX, int minY, Renderable renderable, Position position)
+        {
+            if (position.Point.X - minX >= 0
                         && position.Point.X - minX < map.Width
                         && position.Point.Y - minY >= 0
                         && position.Point.Y - minY < map.Height)
-                {
-                    bool inPlayerFov = World.PlayerFov.Contains(position.Point);
-                    var tile = map.GetTile(position.Point);
+            {
+                bool inPlayerFov = World.PlayerFov.Contains(position.Point);
+                var tile = map.GetTile(position.Point);
 
-                    if ((renderable.ShowOutsidePlayerFov && tile.Explored) || inPlayerFov)
-                    {
-                        screen.Surface[position.Point.X - minX, position.Point.Y - minY].Glyph = renderable.Glyph;
-                        screen.Surface[position.Point.X - minX, position.Point.Y - minY].Foreground = renderable.Color * (inPlayerFov ? 1f : 0.75f);
-                    }
+                if ((renderable.ShowOutsidePlayerFov && tile.Explored) || inPlayerFov)
+                {
+                    screen.Surface[position.Point.X - minX, position.Point.Y - minY].Glyph = renderable.Glyph;
+                    screen.Surface[position.Point.X - minX, position.Point.Y - minY].Foreground = renderable.Color * (inPlayerFov ? 1f : 0.75f);
                 }
-            });
+            }
         }
     }
 }
