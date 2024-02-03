@@ -65,7 +65,7 @@ namespace RoguelikeBase.ECS.Systems.UpdateSystems
                 if (nextTile.BaseTileType != Constants.BaseTileTypes.Wall)
                 {
                     var entitiesAtPosition = World.PhysicsWorld.GetEntitiesAtLocation(position.Point + input.Direction);
-                    if (entitiesAtPosition == null || entitiesAtPosition.Count == 0)
+                    if (entitiesAtPosition == null || !entitiesAtPosition.Any(a => a.Entity.Has<Blocker>()))
                     {
                         World.PhysicsWorld.MoveEntity(entity, position.Point, position.Point + input.Direction);
                         position.Point += input.Direction;

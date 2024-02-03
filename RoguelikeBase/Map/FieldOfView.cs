@@ -25,24 +25,30 @@ namespace RoguelikeBase.Map
                 map.SetTile(point, tile);
             }
         }
+
         public static HashSet<Point> CalculateFOV(GameWorld world, EntityReference entity)
         {
             var entityPosition = entity.Entity.Get<Position>();
             var entityViewDistance = entity.Entity.Get<ViewDistance>();
 
-            HashSet<Point> fov = new HashSet<Point>(entityViewDistance.Distance * entityViewDistance.Distance * 4);
+            return CalculateFOV(world, entityPosition.Point, entityViewDistance.Distance);
+        }
+
+        public static HashSet<Point> CalculateFOV(GameWorld world, Point originPoint, int viewDistance)
+        {
+            HashSet<Point> fov = new HashSet<Point>(viewDistance * viewDistance * 4);
 
             var map = world.Maps[world.CurrentMap];
 
-            HashSet<Point> borderPoints = GetBorderPointsInSquare(map, entityPosition.Point, entityViewDistance.Distance);            
+            HashSet<Point> borderPoints = GetBorderPointsInSquare(map, originPoint, viewDistance);            
             HashSet<Point> pointsToCheck = new HashSet<Point>();
             foreach ( var borderPoint in borderPoints )
             {
-                HashSet<Point> pointsToBorder = GetPointsInLine(entityPosition.Point, borderPoint);
+                HashSet<Point> pointsToBorder = GetPointsInLine(originPoint, borderPoint);
                 bool hitWall = false;
                 foreach(var point in pointsToBorder)
                 {
-                    if(Point.EuclideanDistanceMagnitude(entityPosition.Point, point) > entityViewDistance.Distance * entityViewDistance.Distance)
+                    if(Point.EuclideanDistanceMagnitude(originPoint, point) >= viewDistance * viewDistance)
                     {
                         break;
                     }
@@ -62,7 +68,7 @@ namespace RoguelikeBase.Map
                 }
             }
 
-            fov = PostProcessPoints(map, pointsToCheck, fov, entityPosition.Point);
+            fov = PostProcessPoints(map, pointsToCheck, fov, originPoint);
 
             return fov;
         }

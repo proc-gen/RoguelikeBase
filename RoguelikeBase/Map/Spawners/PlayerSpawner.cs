@@ -22,6 +22,7 @@ namespace RoguelikeBase.Map.Spawners
                 new Renderable() { Color = Color.DarkGreen, Glyph = '@' },
                 new ViewDistance() { Distance = 7 },
                 new Name() { EntityName = "Player" },
+                new Blocker(),
                 new CombatStats()
                 {
                     MaxHealth = 30,
@@ -43,7 +44,8 @@ namespace RoguelikeBase.Map.Spawners
                     new Potion(),
                     new Health() { Amount = 5 },
                     new Consumable(),
-                    new Name() { EntityName = "Health Potion" }
+                    new Name() { EntityName = "Health Potion" },
+                    new Renderable() { Color = Color.Red, Glyph = 173 }
                 );
             }
         }

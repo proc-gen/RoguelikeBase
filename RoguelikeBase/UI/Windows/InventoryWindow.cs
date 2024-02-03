@@ -1,6 +1,7 @@
 ﻿using Arch.Core;
 using Arch.Core.Extensions;
 using RoguelikeBase.ECS.Components;
+using RoguelikeBase.Map;
 using RoguelikeBase.UI.Extensions;
 using RoguelikeBase.Utils;
 using SadConsole;
@@ -80,7 +81,33 @@ namespace RoguelikeBase.UI.Windows
 
         private void DropItem(EntityReference item)
         {
+            var ownerPosition = item.Entity.Get<Owner>().OwnerReference.Entity.Get<Position>();
+            Point targetPosition = Point.None;
+            int fovDistanceForDrop = 0;
+            do
+            {
+                var pointsToCheck = FieldOfView.CalculateFOV(World, ownerPosition.Point, fovDistanceForDrop);
+                foreach (var point in pointsToCheck)
+                {
+                    if (targetPosition == Point.None 
+                        && World.Maps[World.CurrentMap].GetTile(point).BaseTileType != Constants.BaseTileTypes.Wall)
+                    {
+                        var entitiesAtLocation = World.PhysicsWorld.GetEntitiesAtLocation(point);
+                        if(entitiesAtLocation == null || !entitiesAtLocation.Any(a => a.Entity.Has<Item>()))
+                        {
+                            targetPosition = point;
+                        }
+                    }
+                }
+                fovDistanceForDrop++;
+            } while (targetPosition == Point.None);
 
+            item.Entity.Remove<Owner>();
+            item.Entity.Add(new Position() { Point = targetPosition });
+            World.PhysicsWorld.AddEntity(item, targetPosition);
+
+            World.StartPlayerTurn(Point.None);
+            Visible = false;
         }
 
         public override void Render(TimeSpan delta)

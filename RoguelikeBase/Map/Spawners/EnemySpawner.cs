@@ -21,6 +21,7 @@ namespace RoguelikeBase.Map.Spawners
                                     new Renderable() { Color = Color.Red, Glyph = 'g' },
                                     new Input() { CanAct = true },
                                     new Name() { EntityName = "Goblin" },
+                                    new Blocker(),
                                     new CombatStats()
                                     {
                                         MaxHealth = 5,
