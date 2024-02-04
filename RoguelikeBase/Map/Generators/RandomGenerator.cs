@@ -69,6 +69,7 @@ namespace RoguelikeBase.Map.Generators
         {
             Random random = new Random();
             EnemySpawner spawner = new EnemySpawner();
+            ItemSpawner itemSpawner = new ItemSpawner();
             var room = Rooms.First();
 
             int numSpawns = random.Next(0, 4);
@@ -83,7 +84,17 @@ namespace RoguelikeBase.Map.Generators
                 }
             }
 
-            spawner.SpawnEntitiesForPoints(world, spawnLocations);
+            foreach (Point spawnLocation in spawnLocations)
+            {
+                if (random.Next(10) < 2)
+                {
+                    itemSpawner.SpawnEntityForPoint(world, spawnLocation);
+                }
+                else
+                {
+                    spawner.SpawnEntityForPoint(world, spawnLocation);
+                }
+            }
         }
     }
 }

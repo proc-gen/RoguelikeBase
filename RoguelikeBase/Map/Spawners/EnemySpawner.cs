@@ -9,15 +9,21 @@ using System.Threading.Tasks;
 
 namespace RoguelikeBase.Map.Spawners
 {
-    public class EnemySpawner
+    public class EnemySpawner : ISpawner
     {
         public EnemySpawner() { }
         public void SpawnEntitiesForPoints(GameWorld world, HashSet<Point> points) 
         {
             foreach (var point in points)
             {
-                var reference = world.World.Create(new Position() { Point = point }, 
-                                    new ViewDistance() { Distance = 5 }, 
+                SpawnEntityForPoint(world, point);
+            }            
+        }
+
+        public void SpawnEntityForPoint(GameWorld world, Point point)
+        {
+            var reference = world.World.Create(new Position() { Point = point },
+                                    new ViewDistance() { Distance = 5 },
                                     new Renderable() { Color = Color.Red, Glyph = 'g' },
                                     new Input() { CanAct = true },
                                     new Name() { EntityName = "Goblin" },
@@ -31,8 +37,7 @@ namespace RoguelikeBase.Map.Spawners
                                         BaseArmor = 0,
                                         CurrentArmor = 0,
                                     }).Reference();
-                world.PhysicsWorld.AddEntity(reference, point);
-            }            
+            world.PhysicsWorld.AddEntity(reference, point);
         }
     }
 }
