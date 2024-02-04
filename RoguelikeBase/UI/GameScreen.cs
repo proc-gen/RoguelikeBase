@@ -155,6 +155,10 @@ namespace RoguelikeBase.UI
             {
                 RequestMoveDirection(Direction.None);
             }
+            else if (keyboard.IsKeyPressed(Keys.G))
+            {
+                TryPickUpItem();
+            }
             else if(keyboard.IsKeyPressed(Keys.I))
             {
                 inventory.Visible = true;
@@ -171,6 +175,29 @@ namespace RoguelikeBase.UI
             world.StartPlayerTurn(direction == Direction.None 
                                     ? Point.None 
                                     : new Point(direction.DeltaX, direction.DeltaY));
+        }
+
+        private void TryPickUpItem()
+        {
+            var name = world.PlayerRef.Entity.Get<Name>();
+            var position = world.PlayerRef.Entity.Get<Position>();
+            var entitiesAtLocation = world.PhysicsWorld.GetEntitiesAtLocation(position.Point);
+            if (entitiesAtLocation != null && entitiesAtLocation.Any(a => a.Entity.Has<Item>()))
+            {
+                var item = entitiesAtLocation.Where(a => a.Entity.Has<Item>()).FirstOrDefault();
+                string itemName = item.Entity.Get<Name>().EntityName;
+                item.Entity.Add(new Owner() { OwnerReference = world.PlayerRef });
+                item.Entity.Remove<Position>();
+                world.PhysicsWorld.RemoveEntity(item, position.Point);
+
+                world.GameLog.Add(string.Concat(name.EntityName, " picked up ", itemName));
+            }
+            else
+            {
+                world.GameLog.Add("There's nothing here");
+            }
+
+            world.StartPlayerTurn(Point.None);
         }
 
         public override void Render(TimeSpan delta)
