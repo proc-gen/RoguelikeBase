@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RoguelikeBase.ECS.Components
+namespace RoguelikeBase.ECS.Components.Interfaces
 {
-    internal interface IConsumable
+    internal interface IEquipment
     {
     }
 }

@@ -1,6 +1,6 @@
 ﻿using Arch.Core;
 using Arch.Core.Extensions;
-using RoguelikeBase.ECS.Components;
+using RoguelikeBase.ECS.Components.Interfaces;
 using RoguelikeBase.Utils;
 using System;
 using System.Collections.Generic;
