@@ -15,6 +15,7 @@ namespace RoguelikeBase.Map.Spawners
         public PlayerSpawner() { }
         public void SpawnPlayer(GameWorld world, Point startingPosition)
         {
+            var combatEquipment = new CombatEquipment();
             world.PlayerRef = world.World.Create(
                 new Player(),
                 new Position() { Point = startingPosition },
@@ -31,7 +32,8 @@ namespace RoguelikeBase.Map.Spawners
                     CurrentStrength = 14,
                     BaseArmor = 0,
                     CurrentArmor = 0,
-                }
+                },
+                combatEquipment
             ).Reference();
 
             world.PhysicsWorld.AddEntity(world.PlayerRef, startingPosition);
@@ -48,6 +50,28 @@ namespace RoguelikeBase.Map.Spawners
                     new Renderable() { Color = Color.Red, Glyph = 173 }
                 );
             }
+
+            combatEquipment.Weapon = world.World.Create(
+                new Item(),
+                new Equipped(),
+                new Owner() { OwnerReference = world.PlayerRef },
+                new Weapon(),
+                new WeaponStats() { MinDamage = 1, MaxDamage = 3 },
+                new Name() { EntityName = "Dagger" },
+                new Renderable() { Color = Color.CadetBlue, Glyph = '/' }
+            ).Reference();
+
+            combatEquipment.Armor = world.World.Create(
+                new Item(),
+                new Equipped(),
+                new Owner() { OwnerReference = world.PlayerRef },
+                new Armor(),
+                new ArmorStats() { Armor = 1 },
+                new Name() { EntityName = "Leather Armor"},
+                new Renderable() { Color = Color.Brown, Glyph = 227 }
+            ).Reference();
+
+            world.PlayerRef.Entity.Set(combatEquipment);
         }
     }
 }

@@ -36,7 +36,7 @@ namespace RoguelikeBase.UI.Windows
                 InventoryItems.Clear();
                 World.World.Query(in ownedItemsQuery, (Entity entity, ref Owner owner) =>
                 {
-                    if(owner.OwnerReference == World.PlayerRef)
+                    if(owner.OwnerReference == World.PlayerRef && !entity.Has<Equipped>())
                     {
                         InventoryItems.Add(entity.Reference());
                     }
@@ -120,6 +120,7 @@ namespace RoguelikeBase.UI.Windows
             Console.Clear();
             DrawBoxAndTitle();
             DrawInventoryItems();
+            DrawEquipmentList();
             DrawItemSelector();
             Console.Render(delta);
         }
@@ -136,6 +137,13 @@ namespace RoguelikeBase.UI.Windows
             {
                 Console.Print(6, 5 + i, string.Concat(1 + i, ": ", InventoryItems[i].Entity.Get<Name>().EntityName));
             }
+        }
+
+        private void DrawEquipmentList()
+        {
+            var equipment = World.PlayerRef.Entity.Get<CombatEquipment>();
+            Console.Print(Console.Width / 2 + 5, 5, string.Concat("Weapon: ", equipment.Weapon != EntityReference.Null ? equipment.Weapon.Entity.Get<Name>().EntityName : string.Empty));
+            Console.Print(Console.Width / 2 + 5, 6, string.Concat("Armor: ", equipment.Armor != EntityReference.Null ? equipment.Armor.Entity.Get<Name>().EntityName : string.Empty));
         }
 
         private void DrawItemSelector()

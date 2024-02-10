@@ -11,5 +11,10 @@ namespace RoguelikeBase.ECS.Components
     {
         public EntityReference Weapon { get; set; }
         public EntityReference Armor { get; set; }
+        public CombatEquipment()
+        {
+            Weapon = EntityReference.Null; 
+            Armor = EntityReference.Null;
+        }
     }
 }

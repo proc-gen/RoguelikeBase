@@ -36,7 +36,8 @@ namespace RoguelikeBase.Map.Spawners
                                         CurrentStrength = 10,
                                         BaseArmor = 0,
                                         CurrentArmor = 0,
-                                    }).Reference();
+                                    },
+                                    new CombatEquipment()).Reference();
             world.PhysicsWorld.AddEntity(reference, point);
         }
     }
