@@ -15,10 +15,15 @@ namespace RoguelikeBase.Map.Generators
             BaseTileType = Constants.BaseTileTypes.Wall,
             BackgroundColor = new Color(0f, 0f, .5f)
         };
-        static Tile Floor = new Tile()
+        static Tile FloorA = new Tile()
         {
             BaseTileType = Constants.BaseTileTypes.Floor,
             BackgroundColor = Color.LightGray
+        };
+        static Tile FloorB = new Tile()
+        {
+            BaseTileType = Constants.BaseTileTypes.Floor,
+            BackgroundColor = Color.WhiteSmoke
         };
 
         List<Rectangle> Rooms { get; set; }
@@ -41,7 +46,7 @@ namespace RoguelikeBase.Map.Generators
                     }
                     else
                     {
-                        Map.SetTile(i, j, Floor);
+                        Map.SetTile(i, j, i % 2 == j % 2 ? FloorA : FloorB);
                     }
                 }
             }
