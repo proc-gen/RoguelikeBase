@@ -5,6 +5,7 @@ using RoguelikeBase.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,12 +21,10 @@ namespace RoguelikeBase.Items
         }
         public static ConsumableItemProcessor CreateConsumableItemProcessor(Type consumableType)
         {
-            if(consumableType == typeof(Potion))
-            {
-                return new PotionProcessor();
-            }
-
-            return null;
+            string processorName = string.Concat(typeof(ConsumableItemProcessor).Namespace, '.', consumableType.Name, "Processor");
+            Type processorType = Type.GetType(processorName);
+            
+            return processorType != null ? (ConsumableItemProcessor)Activator.CreateInstance(processorType) : null;
         }
 
         public ConsumableItemProcessor() 
