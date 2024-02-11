@@ -9,7 +9,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RoguelikeBase.Items.Processors
+namespace RoguelikeBase.Items.Processors.Consumables
 {
     internal abstract class ConsumableItemProcessor
     {
@@ -27,11 +27,6 @@ namespace RoguelikeBase.Items.Processors
             return processorType != null ? (ConsumableItemProcessor)Activator.CreateInstance(processorType) : null;
         }
 
-        public ConsumableItemProcessor()
-        {
-
-        }
-
-        public abstract void ConsumeItem(GameWorld world, EntityReference itemReference, EntityReference ownerReference);
+        public abstract void Process(GameWorld world, EntityReference entityToProcess);
     }
 }

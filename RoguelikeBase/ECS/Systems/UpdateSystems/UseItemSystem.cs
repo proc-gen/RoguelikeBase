@@ -1,7 +1,7 @@
 ﻿using Arch.Core;
 using Arch.Core.Extensions;
 using RoguelikeBase.ECS.Components;
-using RoguelikeBase.Items.Processors;
+using RoguelikeBase.Items.Processors.Consumables;
 using RoguelikeBase.Utils;
 using System;
 using System.Collections.Generic;
@@ -31,7 +31,7 @@ namespace RoguelikeBase.ECS.Systems.UpdateSystems
                     ConsumableItemProcessors.Add(consumableType, ConsumableItemProcessor.CreateConsumableItemProcessor(consumableType));
                 }
 
-                ConsumableItemProcessors[consumableType].ConsumeItem(World, entity.Reference(), owner.OwnerReference);
+                ConsumableItemProcessors[consumableType].Process(World, entity.Reference());
             });
 
             World.World.Destroy(in itemsToUseQuery);

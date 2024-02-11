@@ -4,16 +4,17 @@ using RoguelikeBase.ECS.Components;
 using RoguelikeBase.Utils;
 using System;
 
-namespace RoguelikeBase.Items.Processors
+namespace RoguelikeBase.Items.Processors.Consumables
 {
     internal class PotionProcessor : ConsumableItemProcessor
     {
-        public override void ConsumeItem(GameWorld world, EntityReference itemReference, EntityReference ownerReference)
+        public override void Process(GameWorld world, EntityReference entityToProcess)
         {
+            var ownerReference = entityToProcess.Entity.Get<Owner>().OwnerReference;
             var ownerName = ownerReference.Entity.Get<Name>();
-            var itemName = itemReference.Entity.Get<Name>();
+            var itemName = entityToProcess.Entity.Get<Name>();
 
-            if (itemReference.Entity.TryGet(out Health health))
+            if (entityToProcess.Entity.TryGet(out Health health))
             {
                 var ownerStats = ownerReference.Entity.Get<CombatStats>();
                 int healAmount = Math.Min(health.Amount, ownerStats.MaxHealth - ownerStats.CurrentHealth);

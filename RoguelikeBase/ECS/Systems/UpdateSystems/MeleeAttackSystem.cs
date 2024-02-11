@@ -1,6 +1,7 @@
 ﻿using Arch.Core;
 using Arch.Core.Extensions;
 using RoguelikeBase.ECS.Components;
+using RoguelikeBase.Items.Processors.Equipment;
 using RoguelikeBase.Utils;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,9 @@ namespace RoguelikeBase.ECS.Systems.UpdateSystems
     {
         QueryDescription meleeAttacksQuery = new QueryDescription().WithAll<MeleeAttack>();
         Random random = new Random();
+        WeaponProcessor weaponProcessor = new WeaponProcessor();
+        ArmorProcessor armorProcessor = new ArmorProcessor();
+
         public MeleeAttackSystem(GameWorld world) 
             : base(world)
         {
@@ -62,18 +66,9 @@ namespace RoguelikeBase.ECS.Systems.UpdateSystems
         {
             int damage = (int)((sourceStats.CurrentStrength - 10f) / 2f + 1f);
             int damageReduction = targetStats.CurrentArmor;
-            
-            if(sourceEquipment.Weapon != EntityReference.Null)
-            {
-                var weaponStats = sourceEquipment.Weapon.Entity.Get<WeaponStats>();
-                damage += random.Next(weaponStats.MinDamage, weaponStats.MaxDamage + 1);
-            }
 
-            if(targetEquipment.Armor != EntityReference.Null)
-            {
-                var armorStats = targetEquipment.Armor.Entity.Get<ArmorStats>();
-                damageReduction += armorStats.Armor;
-            }
+            damage += weaponProcessor.Process(World, sourceEquipment.Weapon);
+            damageReduction += armorProcessor.Process(World, targetEquipment.Armor);
             
             return  damage - damageReduction;
         }
