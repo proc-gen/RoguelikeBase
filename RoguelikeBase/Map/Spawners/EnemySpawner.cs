@@ -1,4 +1,5 @@
 ﻿using Arch.Core.Extensions;
+using RoguelikeBase.Data;
 using RoguelikeBase.ECS.Components;
 using RoguelikeBase.Utils;
 using System;
@@ -22,6 +23,7 @@ namespace RoguelikeBase.Map.Spawners
 
         public void SpawnEntityForPoint(GameWorld world, Point point)
         {
+            var combatEquipment = new CombatEquipment();
             var reference = world.World.Create(new Position() { Point = point },
                                     new ViewDistance() { Distance = 5 },
                                     new Renderable() { Color = Color.Red, Glyph = 'g' },
@@ -37,8 +39,12 @@ namespace RoguelikeBase.Map.Spawners
                                         BaseArmor = 0,
                                         CurrentArmor = 0,
                                     },
-                                    new CombatEquipment()).Reference();
+                                    combatEquipment).Reference();
             world.PhysicsWorld.AddEntity(reference, point);
+
+            combatEquipment.Weapon = WeaponDatabase.Weapons["Dagger"].CreateForOwner(world.World, reference);
+            combatEquipment.Armor = ArmorDatabase.Armors["Cloth Armor"].CreateForOwner(world.World, reference);
+            reference.Entity.Set(combatEquipment);
         }
     }
 }

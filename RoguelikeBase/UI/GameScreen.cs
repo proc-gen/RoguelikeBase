@@ -40,7 +40,7 @@ namespace RoguelikeBase.UI
             screen = new ScreenSurface(GameSettings.GAME_WIDTH, GameSettings.GAME_HEIGHT);
 
             world = new GameWorld();
-            generator = new RoomsAndCorridorsGenerator(GameSettings.GAME_WIDTH * 2, GameSettings.GAME_HEIGHT * 2);
+            generator = new RoomsAndCorridorsGenerator(GameSettings.GAME_WIDTH, GameSettings.GAME_HEIGHT);
 
             inventory = new InventoryWindow(
                 GameSettings.GAME_WIDTH / 4, 

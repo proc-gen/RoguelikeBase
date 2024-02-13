@@ -1,4 +1,5 @@
 ﻿using Arch.Core.Extensions;
+using RoguelikeBase.Data;
 using RoguelikeBase.ECS.Components;
 using RoguelikeBase.Map.Generators;
 using RoguelikeBase.Utils;
@@ -51,25 +52,8 @@ namespace RoguelikeBase.Map.Spawners
                 );
             }
 
-            combatEquipment.Weapon = world.World.Create(
-                new Item(),
-                new Equipped(),
-                new Owner() { OwnerReference = world.PlayerRef },
-                new Weapon(),
-                new WeaponStats() { MinDamage = 1, MaxDamage = 3 },
-                new Name() { EntityName = "Dagger" },
-                new Renderable() { Color = Color.CadetBlue, Glyph = '/' }
-            ).Reference();
-
-            combatEquipment.Armor = world.World.Create(
-                new Item(),
-                new Equipped(),
-                new Owner() { OwnerReference = world.PlayerRef },
-                new Armor(),
-                new ArmorStats() { Armor = 1 },
-                new Name() { EntityName = "Leather Armor"},
-                new Renderable() { Color = Color.Brown, Glyph = 227 }
-            ).Reference();
+            combatEquipment.Weapon = WeaponDatabase.Weapons["Short Sword"].CreateForOwner(world.World, world.PlayerRef);
+            combatEquipment.Armor = ArmorDatabase.Armors["Leather Armor"].CreateForOwner(world.World, world.PlayerRef);
 
             world.PlayerRef.Entity.Set(combatEquipment);
         }
