@@ -21,10 +21,7 @@ namespace RoguelikeBase.Items.Processors.Consumables
         }
         public static ConsumableItemProcessor CreateConsumableItemProcessor(Type consumableType)
         {
-            string processorName = string.Concat(typeof(ConsumableItemProcessor).Namespace, '.', consumableType.Name, "Processor");
-            Type processorType = Type.GetType(processorName);
-
-            return processorType != null ? (ConsumableItemProcessor)Activator.CreateInstance(processorType) : null;
+            return ReflectionUtils.CreateInstanceFromType<ConsumableItemProcessor, ConsumableItemProcessor>(consumableType, "Processor");
         }
 
         public abstract void Process(GameWorld world, EntityReference entityToProcess);

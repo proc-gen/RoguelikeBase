@@ -1,4 +1,5 @@
 ﻿using Arch.Core.Extensions;
+using RoguelikeBase.Data;
 using RoguelikeBase.ECS.Components;
 using RoguelikeBase.Utils;
 using System;
@@ -22,15 +23,7 @@ namespace RoguelikeBase.Map.Spawners
 
         public void SpawnEntityForPoint(GameWorld world, Point point)
         {
-            var reference = world.World.Create(
-                    new Item(),
-                    new Position() { Point = point },
-                    new Potion(),
-                    new Health() { Amount = 5 },
-                    new Consumable(),
-                    new Name() { EntityName = "Health Potion" },
-                    new Renderable() { Color = Color.Red, Glyph = 173 }
-                ).Reference();
+            var reference = ItemDatabase.Items["Health Potion"].CreateAtPosition(world.World, point);
             world.PhysicsWorld.AddEntity(reference, point);
         }
     }

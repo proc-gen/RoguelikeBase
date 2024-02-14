@@ -41,15 +41,7 @@ namespace RoguelikeBase.Map.Spawners
 
             for (int i = 0; i < 3; i++)
             {
-                world.World.Create(
-                    new Item(),
-                    new Owner() { OwnerReference = world.PlayerRef },
-                    new Potion(),
-                    new Health() { Amount = 5 },
-                    new Consumable(),
-                    new Name() { EntityName = "Health Potion" },
-                    new Renderable() { Color = Color.Red, Glyph = 173 }
-                );
+                ItemDatabase.Items["Health Potion"].CreateForOwner(world.World, world.PlayerRef);
             }
 
             combatEquipment.Weapon = WeaponDatabase.Weapons["Short Sword"].CreateForOwner(world.World, world.PlayerRef);
