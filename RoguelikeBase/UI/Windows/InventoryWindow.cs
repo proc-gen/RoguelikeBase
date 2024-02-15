@@ -43,21 +43,24 @@ namespace RoguelikeBase.UI.Windows
                 Visible = false;
             }
 
-            else if (keyboard.IsKeyPressed(Keys.Up))
+            else if (InventoryItems.Any())
             {
-                selectedItem = (selectedItem - 1) % InventoryItems.Count;
-            }
-            else if (keyboard.IsKeyPressed(Keys.Down))
-            {
-                selectedItem = (selectedItem + 1) % InventoryItems.Count;
-            }
-            else if (keyboard.IsKeyPressed(Keys.U))
-            {
-                UseItem(InventoryItems[selectedItem]);
-            }
-            else if (keyboard.IsKeyPressed(Keys.D))
-            {
-                DropItem(InventoryItems[selectedItem]);
+                if (keyboard.IsKeyPressed(Keys.Up))
+                {
+                    selectedItem = (selectedItem - 1) % InventoryItems.Count;
+                }
+                else if (keyboard.IsKeyPressed(Keys.Down))
+                {
+                    selectedItem = (selectedItem + 1) % InventoryItems.Count;
+                }
+                else if (keyboard.IsKeyPressed(Keys.U))
+                {
+                    UseItem(InventoryItems[selectedItem]);
+                }
+                else if (keyboard.IsKeyPressed(Keys.D))
+                {
+                    DropItem(InventoryItems[selectedItem]);
+                }
             }
         }
 
@@ -99,6 +102,9 @@ namespace RoguelikeBase.UI.Windows
                 }
 
                 World.PlayerRef.Entity.Set(combatEquipment);
+                var ownerName = item.Entity.Get<Owner>().OwnerReference.Entity.Get<Name>();
+                var itemName = item.Entity.Get<Name>();
+                World.GameLog.Add(string.Concat(ownerName.EntityName, " equipped ", itemName.EntityName));
             }
 
             UpdateInventoryItems();
@@ -175,7 +181,10 @@ namespace RoguelikeBase.UI.Windows
 
         private void DrawItemSelector()
         {
-            Console.Print(3, selectedItem + 5, "->");
+            if (InventoryItems.Any())
+            {
+                Console.Print(3, selectedItem + 5, "->");
+            }
         }
     }
 }
