@@ -67,7 +67,7 @@ namespace RoguelikeBase.ECS.Systems.UpdateSystems
             int damage = (int)((sourceStats.CurrentStrength - 10f) / 2f + 1f);
             int damageReduction = targetStats.CurrentArmor;
 
-            damage += weaponProcessor.Process(World, sourceEquipment.Weapon);
+            damage += weaponProcessor.Process(World, sourceEquipment.Weapon, true);
             damageReduction += armorProcessor.Process(World, targetEquipment.Armor);
             
             return  damage - damageReduction;

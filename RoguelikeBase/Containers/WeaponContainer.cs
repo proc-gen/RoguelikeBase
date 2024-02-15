@@ -1,6 +1,7 @@
 ﻿using Arch.Core;
 using Arch.Core.Extensions;
 using RoguelikeBase.ECS.Components;
+using RoguelikeBase.ECS.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace RoguelikeBase.Containers
         public string Name { get; set; }
         public int MinDamage { get; set; }
         public int MaxDamage { get; set; }
+        public bool Melee { get; set; }
         public char Glyph { get; set; }
         public int R { get; set; }
         public int G { get; set; }
@@ -21,18 +23,27 @@ namespace RoguelikeBase.Containers
 
         public EntityReference CreateAtPosition(World world, Point point)
         {
-            return world.Create(
+            List<object> components = 
+            [
                 new Item(),
                 new Position() { Point = point },
                 new Weapon(),
                 new WeaponStats() { MinDamage = MinDamage, MaxDamage = MaxDamage },
                 new Name() { EntityName = Name },
                 new Renderable() { Color = new Color(R, G, B), Glyph = Glyph }
-            ).Reference();
+            ];
+
+            if(Melee)
+            {
+                components.Add(new Melee());
+            }
+
+            return world.CreateFromArray(components.ToArray()).Reference();
         }
         public EntityReference CreateForOwner(World world, EntityReference owner)
         {
-            return world.Create(
+            List<object> components =
+            [
                 new Item(),
                 new Equipped(),
                 new Owner() { OwnerReference = owner },
@@ -40,7 +51,14 @@ namespace RoguelikeBase.Containers
                 new WeaponStats() { MinDamage = MinDamage, MaxDamage = MaxDamage },
                 new Name() { EntityName = Name },
                 new Renderable() { Color = new Color(R, G, B), Glyph = Glyph }
-            ).Reference();
+            ];
+
+            if (Melee)
+            {
+                components.Add(new Melee());
+            }
+
+            return world.CreateFromArray(components.ToArray()).Reference();
         }
     }
 }

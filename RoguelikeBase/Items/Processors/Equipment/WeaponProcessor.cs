@@ -14,14 +14,17 @@ namespace RoguelikeBase.Items.Processors.Equipment
     {
         Random random = new Random();
 
-        public int Process(GameWorld world, EntityReference entityToProcess)
+        public int Process(GameWorld world, EntityReference entityToProcess, bool melee)
         {
             int damage = 0;
 
             if(entityToProcess != EntityReference.Null)
             {
-                var weaponStats = entityToProcess.Entity.Get<WeaponStats>();
-                damage = random.Next(weaponStats.MinDamage, weaponStats.MaxDamage + 1);
+                if ((melee && entityToProcess.Entity.Has<Melee>()) || (!melee && !entityToProcess.Entity.Has<Melee>()))
+                {
+                    var weaponStats = entityToProcess.Entity.Get<WeaponStats>();
+                    damage = random.Next(weaponStats.MinDamage, weaponStats.MaxDamage + 1);
+                }
             }
 
             return damage;
