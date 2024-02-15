@@ -42,8 +42,6 @@ namespace RoguelikeBase.Map.Spawners
                                     combatEquipment).Reference();
             world.PhysicsWorld.AddEntity(reference, point);
 
-            combatEquipment.Weapon = WeaponDatabase.Weapons["Dagger"].CreateForOwner(world.World, reference);
-            combatEquipment.Armor = ArmorDatabase.Armors["Cloth Armor"].CreateForOwner(world.World, reference);
             reference.Entity.Set(combatEquipment);
         }
     }

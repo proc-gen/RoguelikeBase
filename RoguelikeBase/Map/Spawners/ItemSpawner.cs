@@ -25,11 +25,11 @@ namespace RoguelikeBase.Map.Spawners
             }
             foreach (var item in WeaponDatabase.Weapons.Keys)
             {
-                randomTable.Add(item, 1);
+                randomTable.Add(item, 5);
             }
             foreach (var item in ArmorDatabase.Armors.Keys)
             {
-                randomTable.Add(item, 1);
+                randomTable.Add(item, 5);
             }
         }
         public void SpawnEntitiesForPoints(GameWorld world, HashSet<Point> points)

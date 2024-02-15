@@ -32,15 +32,7 @@ namespace RoguelikeBase.UI.Windows
         {
             if(World.World.CountEntities(in ownedItemsQuery) != ownedItems)
             {
-                ownedItems = World.World.CountEntities(in ownedItemsQuery);
-                InventoryItems.Clear();
-                World.World.Query(in ownedItemsQuery, (Entity entity, ref Owner owner) =>
-                {
-                    if(owner.OwnerReference == World.PlayerRef && !entity.Has<Equipped>())
-                    {
-                        InventoryItems.Add(entity.Reference());
-                    }
-                });
+                UpdateInventoryItems();
             }
         }
 
@@ -69,14 +61,49 @@ namespace RoguelikeBase.UI.Windows
             }
         }
 
+        private void UpdateInventoryItems()
+        {
+            ownedItems = World.World.CountEntities(in ownedItemsQuery);
+            InventoryItems.Clear();
+            World.World.Query(in ownedItemsQuery, (Entity entity, ref Owner owner) =>
+            {
+                if (owner.OwnerReference == World.PlayerRef && !entity.Has<Equipped>())
+                {
+                    InventoryItems.Add(entity.Reference());
+                }
+            });
+        }
+
         private void UseItem(EntityReference item)
         {
             if(item.Entity.Has<Consumable>())
             {
-                item.Entity.Add(new WantToUseItem());
-                World.StartPlayerTurn(Point.None);
-                Visible = false;
+                item.Entity.Add(new WantToUseItem());    
             }
+            else
+            {
+                var combatEquipment = World.PlayerRef.Entity.Get<CombatEquipment>();
+                var old = item.Entity.Has<Armor>() ? combatEquipment.Armor : combatEquipment.Weapon;
+                if (old != EntityReference.Null)
+                {
+                    old.Entity.Remove<Equipped>();
+                }
+                item.Entity.Add(new Equipped());
+                if (item.Entity.Has<Armor>())
+                {
+                    combatEquipment.Armor = item;
+                }
+                else
+                {
+                    combatEquipment.Weapon = item;
+                }
+
+                World.PlayerRef.Entity.Set(combatEquipment);
+            }
+
+            UpdateInventoryItems();
+            World.StartPlayerTurn(Point.None);
+            Visible = false;
         }
 
         private void DropItem(EntityReference item)

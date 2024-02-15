@@ -13,8 +13,8 @@ namespace RoguelikeBase.ECS.Systems.RenderSystems
 {
     internal class RenderRenderablesSystem : ArchSystem, IRenderSystem
     {
-        QueryDescription renderItemsQuery = new QueryDescription().WithAll<Renderable, Position, Item>();
-        QueryDescription renderEntitiesQuery = new QueryDescription().WithAll<Renderable, Position>().WithNone<Item>();
+        QueryDescription renderItemsQuery = new QueryDescription().WithAll<Renderable, Position>().WithAny<Armor, Weapon, Item>();
+        QueryDescription renderEntitiesQuery = new QueryDescription().WithAll<Renderable, Position>().WithNone<Armor, Weapon, Item>();
 
         public RenderRenderablesSystem(GameWorld world) 
             : base(world)
