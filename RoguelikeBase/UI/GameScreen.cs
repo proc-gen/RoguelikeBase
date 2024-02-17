@@ -9,6 +9,7 @@ using RoguelikeBase.Map.Generators;
 using RoguelikeBase.Map.Spawners;
 using RoguelikeBase.Scenes;
 using RoguelikeBase.UI.Extensions;
+using RoguelikeBase.UI.Overlays;
 using RoguelikeBase.UI.Windows;
 using RoguelikeBase.Utils;
 using SadConsole.Input;
@@ -33,6 +34,7 @@ namespace RoguelikeBase.UI
         List<IUpdateSystem> updateSystems = new List<IUpdateSystem>();
 
         InventoryWindow inventory;
+        TargetingOverlay targetingOverlay;
 
         public GameScreen(RootScreen rootScreen)
         {
@@ -48,9 +50,11 @@ namespace RoguelikeBase.UI
                 GameSettings.GAME_WIDTH / 2, 
                 GameSettings.GAME_HEIGHT / 2,
                 world);
+            targetingOverlay = new TargetingOverlay(world);
 
             Children.Add(screen);
             Children.Add(inventory.Console);
+            Children.Add(targetingOverlay.Console);
 
             InitializeECS();
             StartNewGame();
@@ -112,6 +116,7 @@ namespace RoguelikeBase.UI
             }
 
             inventory.Update(delta);
+            targetingOverlay.Update(delta);
             base.Update(delta);
         }
 
@@ -122,6 +127,10 @@ namespace RoguelikeBase.UI
             if(inventory.Visible)
             {
                 inventory.HandleKeyboard(keyboard);
+            }
+            else if (targetingOverlay.Visible)
+            {
+                targetingOverlay.HandleKeyboard(keyboard);
             }
             else
             {
@@ -162,6 +171,10 @@ namespace RoguelikeBase.UI
             else if(keyboard.IsKeyPressed(Keys.I))
             {
                 inventory.Visible = true;
+            }
+            else if(keyboard.IsKeyPressed(Keys.A))
+            {
+                targetingOverlay.Visible = true;
             }
         }
 
@@ -209,6 +222,11 @@ namespace RoguelikeBase.UI
             }
             
             screen.Render(delta);
+
+            if(targetingOverlay.Visible)
+            {
+                targetingOverlay.Render(delta);
+            }
 
             if (inventory.Visible)
             {
