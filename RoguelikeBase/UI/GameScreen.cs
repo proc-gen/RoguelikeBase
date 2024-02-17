@@ -174,7 +174,13 @@ namespace RoguelikeBase.UI
             }
             else if(keyboard.IsKeyPressed(Keys.A))
             {
-                targetingOverlay.Visible = true;
+                var weapon = world.PlayerRef.Entity.Get<CombatEquipment>().Weapon;
+                if (weapon != EntityReference.Null
+                    && weapon.Entity.Has<Ranged>())
+                {
+                    targetingOverlay.Visible = true;
+                    targetingOverlay.SetEntityForTargeting(weapon);
+                }
             }
         }
 

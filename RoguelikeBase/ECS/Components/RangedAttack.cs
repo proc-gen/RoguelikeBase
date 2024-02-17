@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace RoguelikeBase.ECS.Components
 {
-    public struct MeleeAttack: IAttack
+    internal struct RangedAttack: IAttack
     {
         public EntityReference Source { get; set; }
         public EntityReference Target { get; set; }

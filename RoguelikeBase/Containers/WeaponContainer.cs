@@ -37,6 +37,10 @@ namespace RoguelikeBase.Containers
             {
                 components.Add(new Melee());
             }
+            else
+            {
+                components.Add(new Ranged());
+            }
 
             return world.CreateFromArray(components.ToArray()).Reference();
         }
@@ -56,6 +60,10 @@ namespace RoguelikeBase.Containers
             if (Melee)
             {
                 components.Add(new Melee());
+            }
+            else
+            {
+                components.Add(new Ranged());
             }
 
             return world.CreateFromArray(components.ToArray()).Reference();
