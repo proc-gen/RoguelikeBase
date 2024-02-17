@@ -17,6 +17,11 @@ namespace RoguelikeBase.Utils
             EntityLocations = new Dictionary<Point, HashSet<EntityReference>>();
         }
 
+        public void Clear()
+        {
+            EntityLocations.Clear();
+        }
+
         public void AddEntity(EntityReference entity, Point point)
         {
             if (!EntityLocations.ContainsKey(point)) 

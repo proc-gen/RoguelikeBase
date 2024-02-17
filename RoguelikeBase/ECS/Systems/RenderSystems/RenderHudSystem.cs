@@ -51,9 +51,9 @@ namespace RoguelikeBase.ECS.Systems.RenderSystems
             var position = World.PlayerRef.Entity.Get<Position>().Point;
             string itemName = string.Empty;
             var entitiesAtLocation = World.PhysicsWorld.GetEntitiesAtLocation(position);
-            if (entitiesAtLocation != null && entitiesAtLocation.Any(a => a.Entity.Has<Item>()))
+            if (entitiesAtLocation != null && entitiesAtLocation.Any(a => a.Entity.Has<Item>() || a.Entity.Has<Exit>()))
             {
-                var item = entitiesAtLocation.Where(a => a.Entity.Has<Item>()).FirstOrDefault();
+                var item = entitiesAtLocation.Where(a => a.Entity.Has<Item>() || a.Entity.Has<Exit>()).FirstOrDefault();
                 itemName = item.Entity.Get<Name>().EntityName;
             }
             screen.DrawRLTKStyleBox(GameSettings.GAME_WIDTH * 3 / 4, GameSettings.GAME_HEIGHT - 11, GameSettings.GAME_WIDTH / 4 - 1, 10, Color.White, Color.Black);

@@ -21,5 +21,6 @@ namespace RoguelikeBase.Map.Generators
 
         public abstract Point GetPlayerStartingPosition();
         public abstract void SpawnEntitiesForMap(GameWorld world);
+        public abstract void SpawnExitForMap(GameWorld world);
     }
 }

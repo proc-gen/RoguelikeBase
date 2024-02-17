@@ -42,8 +42,7 @@ namespace RoguelikeBase.UI
             screen = new ScreenSurface(GameSettings.GAME_WIDTH, GameSettings.GAME_HEIGHT);
 
             world = new GameWorld();
-            generator = new RoomsAndCorridorsGenerator(GameSettings.GAME_WIDTH, GameSettings.GAME_HEIGHT);
-
+            
             inventory = new InventoryWindow(
                 GameSettings.GAME_WIDTH / 4, 
                 GameSettings.GAME_HEIGHT / 4 - 5, 
@@ -76,12 +75,37 @@ namespace RoguelikeBase.UI
 
         private void StartNewGame()
         {
-            generator.Generate();
-            new PlayerSpawner().SpawnPlayer(world, generator.GetPlayerStartingPosition());
-            generator.SpawnEntitiesForMap(world);
+            GoNextLevel();
+        }
 
-            world.GameLog.Add("Welcome traveler");
-            world.Maps.Add("map", generator.Map);
+        private void GoNextLevel()
+        {
+            if(world.PlayerRef != EntityReference.Null) 
+            {
+                world.RemoveAllNonPlayerOwnedEntities();
+            }
+
+            generator = new RoomsAndCorridorsGenerator(GameSettings.GAME_WIDTH, GameSettings.GAME_HEIGHT);
+            generator.Generate();
+
+            if(world.PlayerRef == EntityReference.Null)
+            {
+                new PlayerSpawner().SpawnPlayer(world, generator.GetPlayerStartingPosition());
+                world.GameLog.Add("Welcome traveler");
+            }
+            else
+            {
+                var position = world.PlayerRef.Entity.Get<Position>();
+                position.Point = generator.GetPlayerStartingPosition();
+                world.PlayerRef.Entity.Set(position);
+                world.PhysicsWorld.AddEntity(world.PlayerRef, position.Point);
+                world.GameLog.Add("You have descended to the next level");
+            }
+
+            generator.SpawnEntitiesForMap(world);
+            generator.SpawnExitForMap(world);
+
+            world.Maps["map"] = generator.Map;
             world.CurrentMap = "map";
             world.CurrentState = GameState.AwaitingPlayerInput;
             FieldOfView.CalculatePlayerFOV(world);
@@ -181,6 +205,14 @@ namespace RoguelikeBase.UI
                 {
                     targetingOverlay.Visible = true;
                     targetingOverlay.SetEntityForTargeting(weapon);
+                }
+            }
+            else if(keyboard.IsKeyPressed(Keys.D))
+            {
+                var entitiesAtLocation = world.PhysicsWorld.GetEntitiesAtLocation(world.PlayerRef.Entity.Get<Position>().Point);
+                if (entitiesAtLocation != null && entitiesAtLocation.Where(a => a.Entity.Has<Exit>()).Any())
+                {
+                    GoNextLevel();
                 }
             }
         }

@@ -1,4 +1,6 @@
-﻿using RoguelikeBase.Map.Spawners;
+﻿using Arch.Core.Extensions;
+using RoguelikeBase.ECS.Components;
+using RoguelikeBase.Map.Spawners;
 using RoguelikeBase.Utils;
 using System;
 using System.Collections.Generic;
@@ -68,6 +70,17 @@ namespace RoguelikeBase.Map.Generators
         public override Point GetPlayerStartingPosition()
         {
             return Rooms.First().Center;
+        }
+
+        public override void SpawnExitForMap(GameWorld world)
+        {
+            var position = Rooms.Last().Center;
+            world.PhysicsWorld.AddEntity(world.World.Create(
+                new Exit(),
+                new Name() { EntityName = "Exit" },
+                new Position() { Point = position },
+                new Renderable() { Color = Color.Black, Glyph = (char)31, ShowOutsidePlayerFov = true }
+            ).Reference(), position);
         }
 
         public override void SpawnEntitiesForMap(GameWorld world)

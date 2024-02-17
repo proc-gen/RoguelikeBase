@@ -30,6 +30,7 @@ namespace RoguelikeBase.Utils
             Maps = new Dictionary<string, Map.Map>();
             CurrentMap = string.Empty;
             PlayerFov = new HashSet<Point>();
+            PlayerRef = EntityReference.Null;
         }
 
         public void StartPlayerTurn(Point direction)
@@ -40,6 +41,30 @@ namespace RoguelikeBase.Utils
             input.Processed = false;
             PlayerRef.Entity.Set(input);
             CurrentState = GameState.PlayerTurn;
+        }
+
+        public void RemoveAllNonPlayerOwnedEntities()
+        {
+            PhysicsWorld.Clear();
+            List<Entity> entities = new List<Entity>();
+            World.GetEntities(new QueryDescription(), entities);
+
+            foreach(var entity in entities)
+            {
+                if (entity.Has<Owner>())
+                {
+                    if (entity.Get<Owner>().OwnerReference != PlayerRef)
+                    {
+                        entity.Add(new Remove());
+                    }
+                }
+                else if(entity.Reference() != PlayerRef)
+                {
+                    entity.Add(new Remove());
+                }
+            }
+
+            World.Destroy(new QueryDescription().WithAll<Remove>());
         }
     }
 }
