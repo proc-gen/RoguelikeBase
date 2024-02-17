@@ -44,8 +44,6 @@ namespace RoguelikeBase.Map.Spawners
                 ItemDatabase.Items["Health Potion"].CreateForOwner(world.World, world.PlayerRef);
             }
 
-            combatEquipment.Weapon = WeaponDatabase.Weapons["Short Bow"].CreateForOwner(world.World, world.PlayerRef);
-
             world.PlayerRef.Entity.Set(combatEquipment);
         }
     }

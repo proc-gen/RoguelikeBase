@@ -70,6 +70,7 @@ namespace RoguelikeBase.UI
             updateSystems.Add(new UseItemSystem(world));
             updateSystems.Add(new EntityActSystem(world));
             updateSystems.Add(new MeleeAttackSystem(world));
+            updateSystems.Add(new RangedAttackSystem(world));
             updateSystems.Add(new DeathSystem(world));
         }
 

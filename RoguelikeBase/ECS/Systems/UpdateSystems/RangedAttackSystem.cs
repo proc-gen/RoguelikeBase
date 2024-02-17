@@ -11,46 +11,46 @@ using System.Threading.Tasks;
 
 namespace RoguelikeBase.ECS.Systems.UpdateSystems
 {
-    internal class MeleeAttackSystem : ArchSystem, IUpdateSystem
+    internal class RangedAttackSystem : ArchSystem, IUpdateSystem
     {
-        QueryDescription meleeAttacksQuery = new QueryDescription().WithAll<MeleeAttack>();
+        QueryDescription rangedAttacksQuery = new QueryDescription().WithAll<RangedAttack>();
         WeaponProcessor weaponProcessor = new WeaponProcessor();
         ArmorProcessor armorProcessor = new ArmorProcessor();
 
-        public MeleeAttackSystem(GameWorld world) 
+        public RangedAttackSystem(GameWorld world) 
             : base(world)
         {
         }
 
         public void Update(TimeSpan delta)
         {
-            World.World.Query(in meleeAttacksQuery, (ref MeleeAttack meleeAttack) =>
+            World.World.Query(in rangedAttacksQuery, (ref RangedAttack rangedAttack) =>
             {
-                var sourceName = meleeAttack.Source.Entity.Get<Name>();
-                var sourceStats = meleeAttack.Source.Entity.Get<CombatStats>();
-                var sourceEquipment = meleeAttack.Source.Entity.Get<CombatEquipment>();
-                var targetName = meleeAttack.Target.Entity.Get<Name>();
-                var targetStats = meleeAttack.Target.Entity.Get<CombatStats>();
-                var targetEquipment = meleeAttack.Target.Entity.Get<CombatEquipment>();
-                
+                var sourceName = rangedAttack.Source.Entity.Get<Name>();
+                var sourceStats = rangedAttack.Source.Entity.Get<CombatStats>();
+                var sourceEquipment = rangedAttack.Source.Entity.Get<CombatEquipment>();
+                var targetName = rangedAttack.Target.Entity.Get<Name>();
+                var targetStats = rangedAttack.Target.Entity.Get<CombatStats>();
+                var targetEquipment = rangedAttack.Target.Entity.Get<CombatEquipment>();
+
                 var damage = CalculateDamage(sourceStats, targetStats, sourceEquipment, targetEquipment);
                 if (damage > 0)
                 {
                     targetStats.CurrentHealth = Math.Max(0, targetStats.CurrentHealth - damage);
-                    World.GameLog.Add(string.Concat(sourceName.EntityName, " hits ", targetName.EntityName, " for ", damage, "hp."));
-                    if(targetStats.CurrentHealth == 0)
+                    World.GameLog.Add(string.Concat(sourceName.EntityName, " shoots ", targetName.EntityName, " for ", damage, "hp."));
+                    if (targetStats.CurrentHealth == 0)
                     {
                         World.GameLog.Add(string.Concat(sourceName.EntityName, " killed ", targetName.EntityName, "!"));
-                        if (meleeAttack.Source.Entity.Has<Player>())
+                        if (rangedAttack.Source.Entity.Has<Player>())
                         {
-                            meleeAttack.Target.Entity.Add(new Dead());
+                            rangedAttack.Target.Entity.Add(new Dead());
                         }
                         else
                         {
                             World.CurrentState = Constants.GameState.PlayerDeath;
                         }
                     }
-                    meleeAttack.Target.Entity.Set(targetStats);
+                    rangedAttack.Target.Entity.Set(targetStats);
                 }
                 else
                 {
@@ -58,18 +58,18 @@ namespace RoguelikeBase.ECS.Systems.UpdateSystems
                 }
             });
 
-            World.World.Destroy(in meleeAttacksQuery);
+            World.World.Destroy(in rangedAttacksQuery);
         }
 
-        private int CalculateDamage(CombatStats sourceStats,  CombatStats targetStats, CombatEquipment sourceEquipment, CombatEquipment targetEquipment)
+        private int CalculateDamage(CombatStats sourceStats, CombatStats targetStats, CombatEquipment sourceEquipment, CombatEquipment targetEquipment)
         {
-            int damage = (int)((sourceStats.CurrentStrength - 10f) / 2f + 1f);
+            int damage = 0;
             int damageReduction = targetStats.CurrentArmor;
 
-            damage += weaponProcessor.Process(World, sourceEquipment.Weapon, true);
+            damage += weaponProcessor.Process(World, sourceEquipment.Weapon, false);
             damageReduction += armorProcessor.Process(World, targetEquipment.Armor);
-            
-            return  damage - damageReduction;
+
+            return damage - damageReduction;
         }
     }
 }
