@@ -1,6 +1,6 @@
 ﻿using SadConsole.Configuration;
 
-Settings.WindowTitle = "My SadConsole Game";
+Settings.WindowTitle = "Roguelike Base";
 
 Builder gameStartup = new Builder()
     .SetScreenSize(GameSettings.GAME_WIDTH, GameSettings.GAME_HEIGHT)
