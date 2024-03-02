@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace RoguelikeBase.Utils
 {
@@ -13,7 +14,7 @@ namespace RoguelikeBase.Utils
     {
         public static void SaveGame(GameWorld world) 
         {
-            var data = SerializableWorld.SerializeWorld(world.World);
+            var data = SerializableWorld.CreateSerializableWorld(world.World);
             string jsonData;
             using (var sw = new StringWriter())
             {
@@ -35,6 +36,32 @@ namespace RoguelikeBase.Utils
             {
                 file.Write(jsonData);
             }
+        }
+
+        public static GameWorld LoadGame()
+        {
+            string data = string.Empty;
+            using (StreamReader file = new StreamReader("savegame.json"))
+            {
+                data = file.ReadToEnd();
+            }
+
+            SerializableWorld newSerializableWorld = null;
+
+            using (var sr = new StringReader(data))
+            {
+                using (JsonReader reader = new JsonTextReader(sr))
+                {
+                    JsonSerializer serializer = new JsonSerializer();
+
+                    newSerializableWorld = serializer.Deserialize<SerializableWorld>(reader);
+                }
+            }
+
+            GameWorld world = new GameWorld();
+            world.World = SerializableWorld.CreateWorldFromSerializableWorld(newSerializableWorld);
+
+            return world;
         }
 
         private static void deleteSaveData()

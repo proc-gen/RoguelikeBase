@@ -1,6 +1,8 @@
 ﻿using Arch.Core;
 using Arch.Core.Extensions;
+using Newtonsoft.Json.Linq;
 using RoguelikeBase.ECS.Components;
+using RoguelikeBase.ECS.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +15,7 @@ namespace RoguelikeBase.Serializaton
     {
         public List<SerializableEntity> Entities { get; set; }
 
-        public static SerializableWorld SerializeWorld(World world)
+        public static SerializableWorld CreateSerializableWorld(World world)
         {
             SerializableWorld serializableWorld = new SerializableWorld();
 
@@ -28,6 +30,18 @@ namespace RoguelikeBase.Serializaton
             });
 
             return serializableWorld;
+        }
+
+        public static World CreateWorldFromSerializableWorld(SerializableWorld serializableWorld)
+        {
+            var world = World.Create();
+
+            foreach(var serializableEntity in serializableWorld.Entities)
+            {
+                world.CreateFromArray(serializableEntity.GetDeserializedComponents());
+            }
+
+            return world;
         }
     }
 }

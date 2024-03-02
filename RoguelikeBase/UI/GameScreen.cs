@@ -171,6 +171,7 @@ namespace RoguelikeBase.UI
             if (keyboard.IsKeyPressed(Keys.Escape))
             {
                 SaveGameManager.SaveGame(world);
+                var newWorld = SaveGameManager.LoadGame();
                 GoToMainMenu();
             }
             else if (keyboard.IsKeyPressed(Keys.Up))

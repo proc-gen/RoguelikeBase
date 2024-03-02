@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Arch.Core;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,12 +16,12 @@ namespace RoguelikeBase.Serializaton
 
         public object Convert(Type t, JObject data)
         {
-            MethodInfo method = GetType().GetMethod("Convert")
+            MethodInfo method = GetType().GetMethod("ConvertToTyped")
                              .MakeGenericMethod([t]);
             return method.Invoke(this, [data]);
         }
 
-        public T Convert<T>(JObject data)
+        public T ConvertToTyped<T>(JObject data)
             where T : new()
         {
             object retVal = Activator.CreateInstance<T>();
@@ -34,9 +35,22 @@ namespace RoguelikeBase.Serializaton
 
             foreach (var pi in properties)
             {
-                if (data[pi.Name] != null && pi.Name != "IsChanged")
+                if (data[pi.Name] != null)
                 {
-                    pi.SetValue(retVal, System.Convert.ChangeType(data[pi.Name], pi.PropertyType));
+                    switch (pi.PropertyType.Name)
+                    {
+                        case "Color":
+                            pi.SetValue(retVal, new Color((uint)data[pi.Name]["_packedValue"]));
+                            break;
+                        case "Point":
+                            pi.SetValue(retVal, new Point((int)data[pi.Name]["X"], (int)data[pi.Name]["Y"]));
+                            break;
+                        case "EntityReference":
+                            break;
+                        default:
+                            pi.SetValue(retVal, System.Convert.ChangeType(data[pi.Name], pi.PropertyType));
+                            break;
+                    }
                 }
             }
 
