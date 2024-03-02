@@ -1,5 +1,6 @@
 ﻿using Arch.Core;
 using Arch.Core.Extensions;
+using Newtonsoft.Json;
 using RoguelikeBase.Constants;
 using RoguelikeBase.ECS.Components;
 using RoguelikeBase.ECS.Systems.RenderSystems;
@@ -8,6 +9,7 @@ using RoguelikeBase.Map;
 using RoguelikeBase.Map.Generators;
 using RoguelikeBase.Map.Spawners;
 using RoguelikeBase.Scenes;
+using RoguelikeBase.Serializaton;
 using RoguelikeBase.UI.Extensions;
 using RoguelikeBase.UI.Overlays;
 using RoguelikeBase.UI.Windows;
@@ -15,6 +17,7 @@ using RoguelikeBase.Utils;
 using SadConsole.Input;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -167,6 +170,7 @@ namespace RoguelikeBase.UI
         {
             if (keyboard.IsKeyPressed(Keys.Escape))
             {
+                SaveGameManager.SaveGame(world);
                 GoToMainMenu();
             }
             else if (keyboard.IsKeyPressed(Keys.Up))
