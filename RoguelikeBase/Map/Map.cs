@@ -1,4 +1,5 @@
 ﻿using Arch.Core;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace RoguelikeBase.Map
 {
     public class Map
     {
+        [JsonProperty]
         protected Tile[] MapGrid { get; private set; }
         public int Width { get; private set; }
         public int Height { get; private set; }

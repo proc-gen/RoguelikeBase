@@ -39,7 +39,7 @@ namespace RoguelikeBase.UI
         InventoryWindow inventory;
         TargetingOverlay targetingOverlay;
 
-        public GameScreen(RootScreen rootScreen)
+        public GameScreen(RootScreen rootScreen, bool loadGame)
         {
             RootScreen = rootScreen;
             screen = new ScreenSurface(GameSettings.GAME_WIDTH, GameSettings.GAME_HEIGHT);
@@ -59,7 +59,15 @@ namespace RoguelikeBase.UI
             Children.Add(targetingOverlay.Console);
 
             InitializeECS();
-            StartNewGame();
+
+            if (loadGame)
+            {
+                world.LoadGame();
+            }
+            else
+            {
+                StartNewGame();
+            }
         }
 
         private void InitializeECS()
@@ -170,8 +178,7 @@ namespace RoguelikeBase.UI
         {
             if (keyboard.IsKeyPressed(Keys.Escape))
             {
-                SaveGameManager.SaveGame(world);
-                var newWorld = SaveGameManager.LoadGame();
+                world.SaveGame();
                 GoToMainMenu();
             }
             else if (keyboard.IsKeyPressed(Keys.Up))

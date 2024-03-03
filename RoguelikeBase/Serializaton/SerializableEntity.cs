@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace RoguelikeBase.Serializaton
 {
-    internal class SerializableEntity
+    public class SerializableEntity
     {
         public int SourceId { get; set; }
         public int SourceVersionId { get; set; }

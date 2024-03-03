@@ -14,18 +14,16 @@ namespace RoguelikeBase.Utils
     {
         public static void SaveGame(GameWorld world) 
         {
-            var data = SerializableWorld.CreateSerializableWorld(world.World);
             string jsonData;
             using (var sw = new StringWriter())
             {
-                if (data != null)
+                if (world != null)
                 {
                     using (JsonWriter writer = new JsonTextWriter(sw))
                     {
                         JsonSerializer serializer = new JsonSerializer();
-                        serializer.Serialize(writer, data);
+                        serializer.Serialize(writer, world);
                     }
-
                 }
                 jsonData = sw.ToString();
             }
@@ -46,7 +44,7 @@ namespace RoguelikeBase.Utils
                 data = file.ReadToEnd();
             }
 
-            SerializableWorld newSerializableWorld = null;
+            GameWorld world = null;
 
             using (var sr = new StringReader(data))
             {
@@ -54,12 +52,9 @@ namespace RoguelikeBase.Utils
                 {
                     JsonSerializer serializer = new JsonSerializer();
 
-                    newSerializableWorld = serializer.Deserialize<SerializableWorld>(reader);
+                    world = serializer.Deserialize<GameWorld>(reader);
                 }
             }
-
-            GameWorld world = new GameWorld();
-            world.World = SerializableWorld.CreateWorldFromSerializableWorld(newSerializableWorld);
 
             return world;
         }

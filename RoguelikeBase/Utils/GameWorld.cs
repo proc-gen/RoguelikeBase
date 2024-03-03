@@ -1,8 +1,10 @@
 ﻿using Arch.Core;
 using Arch.Core.Extensions;
+using Newtonsoft.Json;
 using RoguelikeBase.Constants;
 using RoguelikeBase.ECS.Components;
 using RoguelikeBase.Map;
+using RoguelikeBase.Serializaton;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +15,15 @@ namespace RoguelikeBase.Utils
 {
     public class GameWorld
     {
+        [JsonIgnore]
         public World World { get; set; }
+        [JsonIgnore] 
         public PhysicsWorld PhysicsWorld { get; set; }
+        [JsonIgnore] 
         public EntityReference PlayerRef { get; set; }
+
+        public SerializableWorld SerializableWorld { get; set; }
+
         public GameState CurrentState { get; set; }
         public List<string> GameLog { get; set; }
         public Dictionary<string, Map.Map> Maps { get; set; }
@@ -65,6 +73,41 @@ namespace RoguelikeBase.Utils
             }
 
             World.Destroy(new QueryDescription().WithAll<Remove>());
+        }
+
+        public void SaveGame()
+        {
+            SerializableWorld = SerializableWorld.CreateSerializableWorld(World);
+            SaveGameManager.SaveGame(this);
+        }
+
+        public void LoadGame()
+        {
+            var world = SaveGameManager.LoadGame();
+            
+            World = SerializableWorld.CreateWorldFromSerializableWorld(world.SerializableWorld);
+            CurrentState = world.CurrentState;
+            GameLog = world.GameLog;
+            Maps = world.Maps;
+            CurrentMap = world.CurrentMap;
+            PlayerFov = world.PlayerFov;
+
+            PopulatePhysicsWorld();
+            GameLog.Add("Welcome back traveler");
+        }
+
+        private void PopulatePhysicsWorld()
+        {
+            QueryDescription query = new QueryDescription().WithAll<Position>();
+            World.Query(in query, (Entity entity, ref Position pos) =>
+            {
+                var reference = entity.Reference();
+                PhysicsWorld.AddEntity(reference, pos.Point);
+                if (entity.Has<Player>())
+                {
+                    PlayerRef = reference;
+                }
+            });
         }
     }
 }
