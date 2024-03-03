@@ -46,6 +46,7 @@ namespace RoguelikeBase.Serializaton
                             pi.SetValue(retVal, new Point((int)data[pi.Name]["X"], (int)data[pi.Name]["Y"]));
                             break;
                         case "EntityReference":
+                            //Handled in second pass after creating entities and their components
                             break;
                         default:
                             pi.SetValue(retVal, System.Convert.ChangeType(data[pi.Name], pi.PropertyType));
