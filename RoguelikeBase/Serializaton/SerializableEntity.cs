@@ -16,10 +16,6 @@ namespace RoguelikeBase.Serializaton
         public int SourceId { get; set; }
         public int SourceVersionId { get; set; }
         [JsonIgnore]
-        public int DestinationId { get; set; }
-        [JsonIgnore]
-        public int DestinationVersionId { get; set; }
-        [JsonIgnore]
         public EntityReference EntityReference { get; set; }
         public Dictionary<Type, object> Components { get; set; }
 
