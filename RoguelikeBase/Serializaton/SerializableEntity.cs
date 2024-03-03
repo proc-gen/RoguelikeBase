@@ -49,7 +49,7 @@ namespace RoguelikeBase.Serializaton
             JObjectConverter jObjectConverter = new JObjectConverter();
             foreach (var component in Components)
             {
-                jObjectConverter.Convert(component.Key, (JObject)component.Value);
+                components.Add(jObjectConverter.Convert(component.Key, (JObject)component.Value));
             }
 
             return components.ToArray();

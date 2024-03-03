@@ -38,10 +38,40 @@ namespace RoguelikeBase.Serializaton
 
             foreach(var serializableEntity in serializableWorld.Entities)
             {
-                world.CreateFromArray(serializableEntity.GetDeserializedComponents());
+                serializableEntity.EntityReference = world.CreateFromArray(serializableEntity.GetDeserializedComponents()).Reference();
+            }
+
+            foreach(var entity in serializableWorld.Entities)
+            {
+                if (entity.EntityReference.Entity.Has<Owner>())
+                {
+                    var jObject = (JObject)entity.Components[typeof(Owner)];
+                    var owner = entity.EntityReference.Entity.Get<Owner>();
+                    owner.OwnerReference = FindNewReference(serializableWorld, (int)jObject["OwnerReference"]["Entity"]["Id"], (int)jObject["OwnerReference"]["Version"]);
+                    entity.EntityReference.Entity.Set(owner);
+                }
+
+                if (entity.EntityReference.Entity.Has<CombatEquipment>())
+                {
+                    var jObject = (JObject)entity.Components[typeof(CombatEquipment)];
+                    var combatEquipment = entity.EntityReference.Entity.Get<CombatEquipment>();
+                    combatEquipment.Weapon = FindNewReference(serializableWorld, (int)jObject["Weapon"]["Entity"]["Id"], (int)jObject["Weapon"]["Version"]);
+                    combatEquipment.Armor = FindNewReference(serializableWorld, (int)jObject["Armor"]["Entity"]["Id"], (int)jObject["Armor"]["Version"]);
+                    entity.EntityReference.Entity.Set(combatEquipment);
+                }
             }
 
             return world;
+        }
+
+        private static EntityReference FindNewReference(SerializableWorld serializableWorld, int id, int version)
+        {
+            if(id == -1 && version == -1)
+            {
+                return EntityReference.Null;
+            }
+
+            return serializableWorld.Entities.Where(a => a.SourceId == id && a.SourceVersionId == version).First().EntityReference;
         }
     }
 }
