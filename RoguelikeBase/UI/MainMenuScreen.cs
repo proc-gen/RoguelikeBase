@@ -66,10 +66,10 @@ namespace RoguelikeBase.UI
                 switch(selectedButtonIndex)
                 {
                     case 0:
-                        RootScreen.AddScreen(Screens.Game, new GameScreen(RootScreen));
+                        RootScreen.AddScreen(Screens.Game, new GameScreen(RootScreen, false));
                         break;
                     case 1:
-                        // Continue Game
+                        RootScreen.AddScreen(Screens.Game, new GameScreen(RootScreen, true));
                         break;
                     case 2:
                         Game.Instance.MonoGameInstance.Exit();
@@ -114,7 +114,7 @@ namespace RoguelikeBase.UI
 
         private bool showContinue()
         {
-            return RootScreen.HasScreen(Screens.Game) || File.Exists("savegame.txt");
+            return RootScreen.HasScreen(Screens.Game) || File.Exists("savegame.json");
         }
 
         public override void Render(TimeSpan delta) 

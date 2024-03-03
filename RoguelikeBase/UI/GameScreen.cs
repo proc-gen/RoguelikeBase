@@ -1,5 +1,6 @@
 ﻿using Arch.Core;
 using Arch.Core.Extensions;
+using Newtonsoft.Json;
 using RoguelikeBase.Constants;
 using RoguelikeBase.ECS.Components;
 using RoguelikeBase.ECS.Systems.RenderSystems;
@@ -8,6 +9,7 @@ using RoguelikeBase.Map;
 using RoguelikeBase.Map.Generators;
 using RoguelikeBase.Map.Spawners;
 using RoguelikeBase.Scenes;
+using RoguelikeBase.Serializaton;
 using RoguelikeBase.UI.Extensions;
 using RoguelikeBase.UI.Overlays;
 using RoguelikeBase.UI.Windows;
@@ -15,6 +17,7 @@ using RoguelikeBase.Utils;
 using SadConsole.Input;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -36,7 +39,7 @@ namespace RoguelikeBase.UI
         InventoryWindow inventory;
         TargetingOverlay targetingOverlay;
 
-        public GameScreen(RootScreen rootScreen)
+        public GameScreen(RootScreen rootScreen, bool loadGame)
         {
             RootScreen = rootScreen;
             screen = new ScreenSurface(GameSettings.GAME_WIDTH, GameSettings.GAME_HEIGHT);
@@ -56,7 +59,15 @@ namespace RoguelikeBase.UI
             Children.Add(targetingOverlay.Console);
 
             InitializeECS();
-            StartNewGame();
+
+            if (loadGame)
+            {
+                world.LoadGame();
+            }
+            else
+            {
+                StartNewGame();
+            }
         }
 
         private void InitializeECS()
@@ -167,6 +178,7 @@ namespace RoguelikeBase.UI
         {
             if (keyboard.IsKeyPressed(Keys.Escape))
             {
+                world.SaveGame();
                 GoToMainMenu();
             }
             else if (keyboard.IsKeyPressed(Keys.Up))
