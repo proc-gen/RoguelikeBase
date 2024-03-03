@@ -6,6 +6,7 @@ using RoguelikeBase.ECS.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -43,25 +44,32 @@ namespace RoguelikeBase.Serializaton
 
             foreach(var entity in serializableWorld.Entities)
             {
-                if (entity.EntityReference.Entity.Has<Owner>())
-                {
-                    var jObject = (JObject)entity.Components[typeof(Owner)];
-                    var owner = entity.EntityReference.Entity.Get<Owner>();
-                    owner.OwnerReference = FindNewReference(serializableWorld, (int)jObject["OwnerReference"]["Entity"]["Id"], (int)jObject["OwnerReference"]["Version"]);
-                    entity.EntityReference.Entity.Set(owner);
-                }
-
-                if (entity.EntityReference.Entity.Has<CombatEquipment>())
-                {
-                    var jObject = (JObject)entity.Components[typeof(CombatEquipment)];
-                    var combatEquipment = entity.EntityReference.Entity.Get<CombatEquipment>();
-                    combatEquipment.Weapon = FindNewReference(serializableWorld, (int)jObject["Weapon"]["Entity"]["Id"], (int)jObject["Weapon"]["Version"]);
-                    combatEquipment.Armor = FindNewReference(serializableWorld, (int)jObject["Armor"]["Entity"]["Id"], (int)jObject["Armor"]["Version"]);
-                    entity.EntityReference.Entity.Set(combatEquipment);
-                }
+                SetEntityReferencesForComponents(serializableWorld, entity);
             }
 
             return world;
+        }
+
+        private static void SetEntityReferencesForComponents(SerializableWorld serializableWorld, SerializableEntity entity)
+        {
+            var entityComponents = entity.EntityReference.Entity.GetAllComponents();
+            foreach (var component in entityComponents)
+            {
+                var ct = component.GetType();
+                PropertyInfo[] properties = ct.GetProperties();
+
+                if (properties.Where(a => a.PropertyType.Name == "EntityReference").Any())
+                {
+                    var jObject = (JObject)entity.Components[ct];
+
+                    foreach (var pi in properties.Where(a => a.PropertyType.Name == "EntityReference"))
+                    {
+                        pi.SetValue(component, FindNewReference(serializableWorld, (int)jObject[pi.Name]["Entity"]["Id"], (int)jObject[pi.Name]["Version"]));
+                    }
+
+                    entity.EntityReference.Entity.Set(component);
+                }
+            }
         }
 
         private static EntityReference FindNewReference(SerializableWorld serializableWorld, int id, int version)
